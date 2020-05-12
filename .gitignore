@@ -1,0 +1,16 @@
+.DS_Store
+tmp
+lib
+dist
+.nyc_output
+npm-debug.log*
+.umi
+.umi-production
+package-lock.json
+coverage
+node_modules
+reports
+screenshots
+*.sw*
+*.un~
+yarn.lock

@@ -29,11 +29,11 @@ class Layout extends Component {
       <div>
         <div className={style.header}>
           <Wallet title="Wan Game" nodeUrl={nodeUrl} />
-          {/* <img className={style.logo} width="28px" height="28px" src={logo} alt="Logo" /> */}
-          <div className={style.title}>Finnexus Options</div>
+          <img className={style.logo} width="28px" height="28px" src={require('../img/logo.png')} alt="Logo" />
+          <div className={style.title}>Private Exchange</div>
         
           <img style={{ height: "25px", margin: "3px 8px 3px 3px" }} src={networkLogo} />
-          <div className={style.gameRule} onClick={this.showGameRule}>Know more</div>
+          <div className={style.gameRule} onClick={this.showGameRule}>How To Use</div>
           <WalletButton />
         </div>
         {this.props.selectedAccountID === 'EXTENSION' && parseInt(this.props.networkId, 10) !== parseInt(networkId, 10) && (

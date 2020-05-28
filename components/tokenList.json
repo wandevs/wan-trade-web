@@ -1,0 +1,10 @@
+[
+    {
+        "symbol": "WBTC",
+        "tokenAddress": "0x3ff928f3d8aff9d29ddd5e796760e884aca0a29f"
+    },
+    {
+        "symbol": "WUSDT",
+        "tokenAddress": "0xb67810a49bad2d4e31159e112734dd7caa99a522"
+    }
+]

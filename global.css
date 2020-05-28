@@ -2,5 +2,29 @@
 
 
 body {
-    background-color: rgba(0, 0, 0, 0.166);
+    /* background-color: rgba(0, 0, 0, 0.166); */
+}
+
+p {
+    margin-top: 1em;
+}
+
+h3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.ant-input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.ant-select-selection {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.ant-btn {
+    width: 300px;
+    height: 40px;
 }

@@ -6,7 +6,7 @@
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "wan-dex-sdk-wallet": "0.0.139",
+    "wan-dex-sdk-wallet": "0.1.0",
     "web3": "^1.2.4"
   },
   "devDependencies": {

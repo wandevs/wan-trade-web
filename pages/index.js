@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { Component } from "../components/base";
+import { Component } from "react";
 import { Tabs, Row, Col, Input, Slider, Radio, Table, Button, Divider } from "antd";
 import BigNumber from 'bignumber.js';
 import { Wallet, getSelectedAccount, WalletButton, WalletButtonLong, getSelectedAccountWallet, getTransactionReceipt } from "wan-dex-sdk-wallet";
@@ -48,7 +48,7 @@ class IndexPage extends Component {
       <div className={[styles.center, styles.app].join(' ')}>
         <Tabs onChange={this.onTabChange} type="card">
           <TabPane tab="Party A" key="1">
-            <PartyA/>
+            <PartyA selectedAccount={this.props.selectedAccount}/>
           </TabPane>
           <TabPane tab="Party B" key="2">
             <PartyB/>

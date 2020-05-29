@@ -15,7 +15,7 @@ h3 {
 }
 
 .ant-input {
-    margin-top: 10px;
+    margin-top: 9px;
     margin-bottom: 10px;
 }
 
@@ -27,4 +27,5 @@ h3 {
 .ant-btn {
     width: 300px;
     height: 40px;
+    margin: 10px;
 }

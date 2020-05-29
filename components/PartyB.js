@@ -15,7 +15,7 @@ class PartyB extends Component {
         <div className={styles['border']}>
           <Row>
             <Row><h3>Paste Party A's Signed Order Data </h3></Row>
-            <Row><TextArea /></Row>
+            <Row><TextArea rows={4}/></Row>
           </Row>
         </div>
         <Row>
@@ -25,7 +25,7 @@ class PartyB extends Component {
           <TokenInfo title={"Verify Sell Token Information"} verify={true} />
         </Row>
         <Row>
-          <TokenInfo title={"Verify Sell Token Information"} verify={true} />
+          <TokenInfo title={"Verify Buy Token Information"} verify={true} />
         </Row>
         <Row>
           <LimitInfo />

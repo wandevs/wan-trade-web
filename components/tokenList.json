@@ -6,5 +6,9 @@
     {
         "symbol": "WUSDT",
         "tokenAddress": "0xb67810a49bad2d4e31159e112734dd7caa99a522"
+    },
+    {
+        "symbol": "WWAN",
+        "tokenAddress": "0x916283cc60fdaf05069796466af164876e35d21f"
     }
 ]

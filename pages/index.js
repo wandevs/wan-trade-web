@@ -48,10 +48,10 @@ class IndexPage extends Component {
       <div className={[styles.center, styles.app].join(' ')}>
         <Tabs onChange={this.onTabChange} type="card">
           <TabPane tab="Party A" key="1">
-            <PartyA selectedAccount={this.props.selectedAccount}/>
+            <PartyA selectedAccount={this.props.selectedAccount} wallet={this.props.selectedWallet} />
           </TabPane>
           <TabPane tab="Party B" key="2">
-            <PartyB/>
+            <PartyB selectedAccount={this.props.selectedAccount} wallet={this.props.selectedWallet} />
           </TabPane>
         </Tabs>
       </div>

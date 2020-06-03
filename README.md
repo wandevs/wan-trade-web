@@ -1,4 +1,4 @@
-# Finnexus Options
+# P2P Exchange
 
 ## Getting Started
 

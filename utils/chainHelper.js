@@ -198,7 +198,8 @@ const isValidSignature = (account, signature, message) => {
 };
 
 const sha3ToHex = message => {
-  return '0x' + sha3(message).toString('hex');
+  // return '0x' + sha3(message).toString('hex');
+  return;
 };
 
 const EIP712_DOMAIN_TYPEHASH = sha3ToHex('EIP712Domain(string name)');

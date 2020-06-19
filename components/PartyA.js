@@ -1,11 +1,12 @@
 import { Component } from 'react';
 import { Row, Col, Input, Button, message } from 'antd';
 import { WalletButton } from "wan-dex-sdk-wallet";
+import copy from 'clipboard-copy';
 import TokenInfo from './TokenInfo';
 import LimitInfo from './LimitInfo';
-import { getApproveState, enable, disable } from '../utils/chainHelper';
-
+import { getApproveState, enable, disable, buildOrder, toWei, dexContract, getTokenDecimal, getTokenBalance, isValidAddress } from '../utils/chainHelper';
 import styles from './style.less';
+import BigNumber from 'bignumber.js';
 
 const { TextArea } = Input;
 
@@ -13,59 +14,28 @@ class PartyA extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buyAmount: '',
       sellAmount: '',
-      buyTokenAddress: '',
+      sellTokenSymbol: '',
       sellTokenAddress: '',
+      buyAmount: '',
+      buyTokenSymbol: '',
+      buyTokenAddress: '',
       addressPartyA: '',
       addressPartyB: '',
-      timeout: (Date.now()/1000 + 600).toFixed(0),
+      orderData: '',
+      timeout: '10min',
       limitChecked: false,
       limitLoading: false,
+      signatureLoading: false,
     }
   }
 
-  updateBuyInfo = (buyAmount, buyTokenAddress) => {
-    this.setState({ buyAmount, buyTokenAddress });
-  }
-
-  updateSellInfo = (sellAmount, sellTokenAddress) => {
-    this.setState({ sellAmount, sellTokenAddress, limitLoading: true });
-    setTimeout(async ()=>{
-      let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA, sellAmount);
-      this.setState({limitChecked: approved, limitLoading: false});
-    }, 0);
-  }
-
-  updateLimitInfo = (timeout) => {
-    this.setState({timeout});
-  }
-
-  onLimitChange = (v) => {
-    if (!this.state.sellTokenAddress) {
-      message.info("Please fill sell token info first");
-      return;
+  componentDidMount() {
+    if (this.props.selectedAccount) {
+      this.setState({
+        addressPartyA: this.props.selectedAccount.get('address')
+      })
     }
-
-    this.setState({limitLoading: true});
-
-    setTimeout(async ()=>{
-      try {
-        let ret = false;
-        if (v) {
-          ret = await enable(this.state.sellTokenAddress, this.props.wallet);
-        } else {
-          ret = await disable(this.state.sellTokenAddress, this.props.wallet);
-        }
-        if (ret) {
-          this.setState({limitLoading: false, limitChecked: v});
-          return;
-        }
-      } catch (err) {
-        message.error(err.toString());
-      }
-      this.setState({limitLoading: false});
-    }, 0);
   }
 
   componentWillUpdate(props) {
@@ -75,8 +45,151 @@ class PartyA extends Component {
     }
   }
 
+  updateBuyInfo = (buyAmount, buyTokenAddress, buyTokenSymbol) => {
+    this.setState({ buyAmount, buyTokenAddress, buyTokenSymbol });
+  }
+
+  updateSellInfo = (sellAmount, sellTokenAddress, sellTokenSymbol) => {
+    this.setState({ sellAmount, sellTokenAddress, sellTokenSymbol, limitLoading: true });
+    setTimeout(async () => {
+      let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA);
+      this.setState({ limitChecked: approved, limitLoading: false });
+    }, 0);
+  }
+
+  updateLimitInfo = (timeout) => {
+    this.setState({ timeout });
+  }
+
+  getTimeout = () => {
+    let time = Date.now() / 1000;
+    const { timeout } = this.state;
+    switch (timeout) {
+      case '10min':
+        time += 10 * 60;
+        break;
+      case '1hour':
+        time += 60 * 60;
+        break;
+      case '1day':
+        time += 24 * 60 * 60;
+        break;
+      case '1week':
+        time += 7 * 24 * 60 * 60;
+        break;
+    }
+    return time.toFixed(0);
+  }
+
+  onLimitChange = (v) => {
+    if (!this.state.sellTokenAddress) {
+      message.info("Please fill sell token info first");
+      return;
+    }
+
+    this.setState({ limitLoading: true });
+
+    setTimeout(async () => {
+      try {
+        let ret = false;
+        if (v) {
+          ret = await enable(this.state.sellTokenAddress, this.props.wallet);
+        } else {
+          ret = await disable(this.state.sellTokenAddress, this.props.wallet);
+        }
+        if (ret) {
+          this.setState({ limitLoading: false, limitChecked: v });
+          return;
+        }
+      } catch (err) {
+        message.error(err.toString());
+      }
+      this.setState({ limitLoading: false });
+    }, 0);
+  }
+
+  onClickSignature = async () => {
+    try {
+      this.setState({ signatureLoading: true });
+      const { wallet } = this.props;
+      const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, addressPartyA, addressPartyB, sellTokenSymbol, buyTokenSymbol } = this.state;
+      if (!isValidAddress(addressPartyB) || !isValidAddress(sellTokenAddress) || !isValidAddress(buyTokenAddress)) {
+        message.warn('Invalid address');
+        this.setState({ signatureLoading: false });
+        return;
+      }
+      const userAddress = this.props.selectedAccount.get('address');
+      const timeout = this.getTimeout();
+      const sellDecimal = await getTokenDecimal(sellTokenAddress);
+      const sellBalance = await getTokenBalance(sellTokenAddress, userAddress);
+      const buyDecimal = await getTokenDecimal(buyTokenAddress);
+      const buyBalance = await getTokenBalance(buyTokenAddress, userAddress);
+      // console.log('sellAmount, buyAmount:', sellAmount, buyAmount, typeof (sellAmount), typeof (buyAmount));
+      if (Number.isNaN(parseFloat(sellAmount)) || Number.isNaN(parseFloat(buyAmount))) {
+        message.warn('Invalid amount value');
+        this.setState({ signatureLoading: false });
+        return;
+      }
+
+      if (new BigNumber(sellAmount).gt(sellBalance) || new BigNumber(buyAmount).gt(buyBalance)) {
+        message.warn("Amount out of balance");
+        this.setState({ signatureLoading: false });
+        return;
+      }
+
+      let makerOrdersParam = {
+        trader: addressPartyA,
+        relayer: addressPartyB,
+        version: 2,
+        side: 'sell',
+        type: 'limit',
+        expiredAtSeconds: timeout,
+        makerRebateRate: 0,
+        asMakerFeeRate: 0,
+        asTakerFeeRate: 0,
+        quoteTokenAmount: toWei(buyAmount, buyDecimal),
+        baseTokenAmount: toWei(sellAmount, sellDecimal),
+        gasTokenAmount: 0,
+        sellTokenSymbol,
+        buyTokenSymbol,
+        sellTokenAddress,
+        buyTokenAddress,
+      }
+      let exchange = dexContract;
+      let signedData = await buildOrder(
+        makerOrdersParam,
+        exchange,
+        sellTokenAddress,
+        buyTokenAddress,
+        wallet
+      );
+      
+      makerOrdersParam.signedData = signedData;
+      console.log('makerOrdersParam:', makerOrdersParam);
+      this.setState({
+        orderData: JSON.stringify(makerOrdersParam),
+        signatureLoading: false,
+      });
+      message.success('Sign order data successfully');
+    } catch (e) {
+      message.warn(e.toString());
+      this.setState({
+        orderData: '',
+        signatureLoading: false,
+      });
+    }
+  }
+
+  onCopyData = (e) => {
+    copy(this.state.orderData).then(data => {
+      message.success('Copy to clipboard successfully');
+    }, err => {
+      message.error('Copy failed');
+    });
+  }
+
   render() {
-    const address = this.props.selectedAccount ? this.props.selectedAccount.get('address') : "Select Address in Right-Top Wallet Button";
+    const { addressPartyA, addressPartyB, limitChecked, limitLoading, orderData } = this.state;
     return (
       <div>
         <div className={styles['border']}>
@@ -87,22 +200,22 @@ class PartyA extends Component {
               <Row><p>Party B Address:</p></Row>
             </Col>
             <Col span={16}>
-              <Row><p>{address}</p></Row>
-              <Row><Input value={this.state.addressPartyB} onChange={e => this.setState({ addressPartyB: e.target.value.toLowerCase() })} /></Row>
+              <Row><p>{addressPartyA}</p></Row>
+              <Row><Input value={addressPartyB} onChange={e => this.setState({ addressPartyB: e.target.value.toLowerCase() })} /></Row>
             </Col>
           </Row>
         </div>
         <Row>
-          <TokenInfo title={"Fill Buy Token Information"} userAddress={this.state.addressPartyB} updateInfo={this.updateBuyInfo} />
+          <TokenInfo title={"Fill Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} />
         </Row>
         <Row>
-          <TokenInfo title={"Fill Sell Token Information"} userAddress={address} updateInfo={this.updateSellInfo} />
+          <TokenInfo title={"Fill Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} />
         </Row>
         <Row>
-          <LimitInfo checked={this.state.limitChecked} loading={this.state.limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
+          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
         </Row>
         <Row>
-          <Button type="primary">Signature Order</Button>
+          <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading}>Signature Order</Button>
         </Row>
         <Row>
           <div className={styles['border']}>
@@ -111,12 +224,12 @@ class PartyA extends Component {
               <Col span={1}></Col>
               <Col span={23}><p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the private exchange.</p></Col>
             </Row>
-            <Row><TextArea disabled={true} rows={4} /></Row>
+            <Row><TextArea id="orderDataField" disabled={true} rows={4} value={orderData} /></Row>
             <Row>
               <Col span={1}></Col>
               <Col span={23}><p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p></Col>
             </Row>
-            <Row><Button type="primary">Copy Data</Button></Row>
+            <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
             <Row><Button type="slave">Cancel Order</Button></Row>
           </div>
         </Row>

@@ -12,7 +12,7 @@ class LimitInfo extends Component {
         <Row>
           <Col span={8}><p>Timeout:</p></Col>
           <Col span={16}>
-            <Select style={{width: "424px"}} defaultValue="10min">
+            <Select style={{width: "424px"}} defaultValue="10min" onChange={this.props.updateInfo}>
               <Option value="10min">10 min</Option>
               <Option value="1hour">1 hour</Option>
               <Option value="1day">1 day</Option>

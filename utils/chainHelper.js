@@ -6,9 +6,20 @@ import { message } from 'antd';
 import { getSelectedAccountWallet, getTransactionReceipt, getContract } from 'wan-dex-sdk-wallet';
 import sleep from 'ko-sleep';
 import BigNumber from 'bignumber.js';
-import { sha3, ecrecover, hashPersonalMessage, toBuffer, pubToAddress } from 'ethereumjs-util';
+import { ecrecover, hashPersonalMessage, toBuffer, pubToAddress, fromRpcSig } from 'ethereumjs-util';
+import { sha3 } from 'web3-utils';
 
 let web3;
+
+const getWeb3 = () => {
+  let web3;
+  if (nodeUrl.indexOf('ws') === 0) {
+    web3 = new Web3(new Web3.providers.WebsocketProvider(nodeUrl));
+  } else {
+    web3 = new Web3(new Web3.providers.HttpProvider(nodeUrl));
+  }
+  return web3;
+};
 
 if (nodeUrl.indexOf('ws') === 0) {
   web3 = new Web3(new Web3.providers.WebsocketProvider(nodeUrl));
@@ -17,9 +28,11 @@ if (nodeUrl.indexOf('ws') === 0) {
 }
 
 let dexScAddr = networkId === 1 ? mainnetDexSCAddr : testnetDexSCAddr;
+let proxyAddr = networkId === 1 ? mainnetProxyAddr : testnetProxyAddr;
 let dexContract = new web3.eth.Contract(dexAbi, dexScAddr);
 
-let proxyAddr = networkId === 1 ? mainnetProxyAddr : testnetProxyAddr;
+export { dexContract, dexScAddr };
+
 
 
 export const getTokenBalance = async (tokenAddress, userAddress) => {
@@ -35,6 +48,32 @@ export const getTokenBalance = async (tokenAddress, userAddress) => {
     }
     return Number(balance) / Number(Math.pow(10, decimals));
   }
+};
+
+exports.isValidAddress = function (address) {
+  return /^0x[0-9a-fA-F]{40}$/i.test(address)
+}
+
+/* export const checkTokenAddress = async (tokenAddress) => {
+  try {
+    // web3.utils.isAddress
+    let isAddress = new web3.utils.toChecksumAddress(tokenAddress);
+    console.log('------', new web3.utils.toChecksumAddress);
+    console.log('isAddress------:', isAddress);
+    // let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
+    // let symbol = await erc20sc.methods.symbol().call();
+
+    console.log('symbol:', symbol);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}; */
+
+export const getTokenDecimal = async (tokenAddress) => {
+  let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
+  let decimals = await erc20sc.methods.decimals().call();
+  return decimals;
 };
 
 export const getApproveState = async (tokenAddress, userAddress) => {
@@ -98,47 +137,27 @@ const get64BytesString = string => {
   return string;
 };
 
-const getOrderSignature = async (order, exchange, baseToken, quoteToken) => {
+const getOrderSignature = async (order, exchange, baseToken, quoteToken, wallet) => {
   const copyedOrder = JSON.parse(JSON.stringify(order));
   copyedOrder.baseToken = baseToken;
   copyedOrder.quoteToken = quoteToken;
-
   const orderHash = getOrderHash(copyedOrder);
-  const newWeb3 = getWeb3();
-
-  // This depends on the client, ganache-cli/testrpc auto prefix the message header to message
-  // So we have to set the method ID to 0 even through we use web3.eth.sign
-  const signature = fromRpcSig(await newWeb3.eth.sign(orderHash, order.trader));
-  signature.config = `0x${signature.v.toString(16)}00` + '0'.repeat(60);
-  const isValid = isValidSignature(order.trader, signature, orderHash);
-
-  assert.equal(true, isValid);
-  order.signature = signature;
+  const signature = await wallet.signPersonalMessage(orderHash);
+  console.log('signature---------:', signature);
+  // const orderSignature = '0x' + signature.slice(130) + '0'.repeat(62) + signature.slice(2, 130);
+  let r = signature.slice(2, 66);
+  let s = signature.slice(66, -2);
+  // console.log('r:', r, r.length,  Buffer.from(r, 'hex'));
+  // console.log('s:', s, s.length,  Buffer.from(s, 'hex'));
   order.orderHash = orderHash;
-};
-
-export const buildOrder = async (orderParam, exchange, baseTokenAddress, quoteTokenAddress) => {
-  const order = {
-      trader: orderParam.trader,
-      relayer: orderParam.relayer,
-      data: generateOrderData(
-          orderParam.version,
-          orderParam.side === 'sell',
-          orderParam.type === 'market',
-          orderParam.expiredAtSeconds,
-          orderParam.asMakerFeeRate,
-          orderParam.asTakerFeeRate,
-          orderParam.makerRebateRate || '0',
-          Math.round(Math.random() * 10000000)
-      ),
-      baseTokenAmount: orderParam.baseTokenAmount,
-      quoteTokenAmount: orderParam.quoteTokenAmount,
-      gasTokenAmount: orderParam.gasTokenAmount
+  order.signature = {
+    config: '0x' + signature.slice(130) + '0'.repeat(62),
+    r: `0x${r}`,
+    s: `0x${s}`,
+    // r: Buffer.from(r, 'hex'),
+    // s: Buffer.from(s, 'hex'),
   };
-
-  await getOrderSignature(order, exchange, baseTokenAddress, quoteTokenAddress);
-
-  return order;
+  console.log('order.signature;', order.signature);
 };
 
 const generateOrderData = (
@@ -162,8 +181,29 @@ const generateOrderData = (
   res += addLeadingZero(new BigNumber(makerRebateRate).toString(16), 2 * 2);
   res += addLeadingZero(new BigNumber(salt).toString(16), 8 * 2);
   res += isMakerOnly ? '01' : '00';
-
   return addTailingZero(res, 66);
+};
+
+export const buildOrder = async (orderParam, exchange, baseTokenAddress, quoteTokenAddress, wallet) => {
+  const order = {
+      trader: orderParam.trader,
+      relayer: orderParam.relayer,
+      data: generateOrderData(
+          orderParam.version,
+          orderParam.side === 'sell',
+          orderParam.type === 'market',
+          orderParam.expiredAtSeconds,
+          orderParam.asMakerFeeRate,
+          orderParam.asTakerFeeRate,
+          orderParam.makerRebateRate || '0',
+          Math.round(Math.random() * 10000000)
+      ),
+      baseTokenAmount: orderParam.baseTokenAmount,
+      quoteTokenAmount: orderParam.quoteTokenAmount,
+      gasTokenAmount: orderParam.gasTokenAmount
+  };
+  await getOrderSignature(order, exchange, baseTokenAddress, quoteTokenAddress, wallet);
+  return order;
 };
 
 const addLeadingZero = (str, length) => {
@@ -198,8 +238,8 @@ const isValidSignature = (account, signature, message) => {
 };
 
 const sha3ToHex = message => {
-  // return '0x' + sha3(message).toString('hex');
-  return;
+  return '0x' + sha3(message).toString('hex');
+  // return;
 };
 
 const EIP712_DOMAIN_TYPEHASH = sha3ToHex('EIP712Domain(string name)');
@@ -212,6 +252,7 @@ const getDomainSeparator = () => {
 };
 
 const getEIP712MessageHash = message => {
+  // console.log('getEIP712MessageHash message:', message);
   return sha3ToHex('0x1901' + getDomainSeparator().slice(2) + message.slice(2), {
       encoding: 'hex'
   });
@@ -233,3 +274,13 @@ const getOrderHash = order => {
   );
 };
 
+const WanWei = 18;
+
+export const toWei = (x, d = WanWei) => {
+    return new BigNumber(x).times(new BigNumber(10).pow(d)).toFixed();
+};
+
+export const fromWei = (x, d = WanWei) => {
+  console.log('from wei:', x, d);
+  return new BigNumber(x).div(new BigNumber(10).pow(d)).toFixed();
+};

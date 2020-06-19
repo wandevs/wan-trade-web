@@ -3,7 +3,7 @@ import { join } from "path";
 export default function(api) {
   api.modifyEntryRender(memo => {
     memo = `const rootContainer = window.g_plugins.apply('rootContainer', {
-    initialValue: React.createElement(require('${join(__dirname, "./redux/index")}').default,
+    initialValue: React.createElement(require('${join(__dirname, "./redux/index").replace(/\\/g, '/')}').default,
     null,
     React.createElement(require('./router').default),),
   });

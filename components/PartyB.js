@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import { Row, Col, Input, Button } from 'antd';
-import { WalletButtonLong } from "wan-dex-sdk-wallet";
+import { Row, Col, Input, Button, message } from 'antd';
+import { WalletButtonLong, getTransactionReceipt } from "wan-dex-sdk-wallet";
 import TokenInfo from './TokenInfo';
 import LimitInfo from './LimitInfo';
 import { enable, disable, getTokenBalance, getTokenDecimal, fromWei, dexContract, buildOrder, dexScAddr, getApproveState } from '../utils/chainHelper';
@@ -26,6 +26,7 @@ class PartyB extends Component {
       quoteToken: '',
       relayer: '',
       makerSignedData: null,
+      exchangeLoading: false,
     }
   }
 
@@ -140,6 +141,9 @@ class PartyB extends Component {
 
   sendExchange = async () => {
     console.log('send Exchange');
+    this.setState({
+      exchangeLoading: true
+    });
     const {  makerSignedData, makerOrder, takerOrder, baseToken, quoteToken, relayer, sellData, buyData } = this.state;
     takerOrder.expiredAtSeconds = this.getTimeout();
     let takerSignedData = await buildOrder(
@@ -170,23 +174,37 @@ class PartyB extends Component {
     };
     console.log('params:', params);
 
-    /* let transactionID = await selectedWallet.sendTransaction(params);
-    watchTransactionStatus(transactionID, (ret) => {
+    let transactionID = await this.props.wallet.sendTransaction(params);
+    this.watchTransactionStatus(transactionID, (ret) => {
+      console.log('watchTransactionStatus res:', ret);
       if (ret) {
-        this.setState({
-          selectedCodes: []
-        });
-        window.localStorage.removeItem(`${prefix}_selectionList`);
-        this.resetPlaceHolder();
+        message.success('Exchange successfully');
       } else {
-        alertAntd(Lang.entry.failed);
+        message.error('Exchange failed');
       }
-      this.setState({ modalVisible: false });
-    }); */
+      this.setState({
+        exchangeLoading: false
+      });
+    });
   }
 
+  watchTransactionStatus = (txID, callback) => {
+    const getTransactionStatus = async () => {
+      const tx = await getTransactionReceipt(txID);
+      console.log('tx:', tx);
+      if (!tx) {
+        window.setTimeout(() => getTransactionStatus(txID), 3000);
+      } else if (callback) {
+        callback(Number(tx.status) === 1);
+      } else {
+        window.alertAntd('success');
+      }
+    };
+    window.setTimeout(() => getTransactionStatus(txID), 3000);
+  };
+
   render() {
-    const { limitChecked, limitLoading } = this.state;
+    const { limitChecked, limitLoading, exchangeLoading } = this.state;
     return (
       <div>
         <div className={styles['border']}>
@@ -208,7 +226,7 @@ class PartyB extends Component {
           <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
         </Row>
         <Row>
-          <Button type="primary" onClick={this.sendExchange}>Send to Exchange</Button>
+          <Button type="primary" onClick={this.sendExchange} loading={exchangeLoading} >Send to Exchange</Button>
         </Row>
       </div>
     );

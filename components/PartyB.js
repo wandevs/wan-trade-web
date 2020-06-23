@@ -177,7 +177,6 @@ class PartyB extends Component {
       value: 0,
       gasPrice: "0x3B9ACA00",
       gasLimit: "0x989680", // 10,000,000
-      gas: 0,
     };
     console.log('params:', params);
 

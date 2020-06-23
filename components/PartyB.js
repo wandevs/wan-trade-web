@@ -77,8 +77,8 @@ class PartyB extends Component {
         type: data.type,
         asMakerFeeRate: data.asMakerFeeRate,
         asTakerFeeRate: data.asTakerFeeRate,
-        quoteTokenAmount: data.baseTokenAmount,
-        baseTokenAmount: data.quoteTokenAmount,
+        quoteTokenAmount: data.quoteTokenAmount,
+        baseTokenAmount: data.baseTokenAmount,
         gasTokenAmount: data.gasTokenAmount,
       },
       makerSignedData: data.signedData,
@@ -141,16 +141,22 @@ class PartyB extends Component {
 
   sendExchange = async () => {
     console.log('send Exchange');
+    const {  makerSignedData, makerOrder, takerOrder, baseToken, quoteToken, relayer, sellData, buyData, limitChecked } = this.state;
+    if (!limitChecked) {
+      message.warn("Need to approve smart contract");
+      return;
+    }
     this.setState({
       exchangeLoading: true
     });
-    const {  makerSignedData, makerOrder, takerOrder, baseToken, quoteToken, relayer, sellData, buyData } = this.state;
     takerOrder.expiredAtSeconds = this.getTimeout();
     let takerSignedData = await buildOrder(
       takerOrder,
       dexContract,
-      sellData.tokenAddress,
-      buyData.tokenAddress,
+      // sellData.tokenAddress,
+      // buyData.tokenAddress,
+      baseToken,
+      quoteToken,
       this.props.wallet
     );
     // console.log('takerOrder, makerOrder:', takerOrder, makerOrder);
@@ -171,10 +177,12 @@ class PartyB extends Component {
       value: 0,
       gasPrice: "0x3B9ACA00",
       gasLimit: "0x989680", // 10,000,000
+      gas: 0,
     };
     console.log('params:', params);
 
     let transactionID = await this.props.wallet.sendTransaction(params);
+    console.log('transactionID:', transactionID);
     this.watchTransactionStatus(transactionID, (ret) => {
       console.log('watchTransactionStatus res:', ret);
       if (ret) {

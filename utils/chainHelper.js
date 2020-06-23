@@ -6,8 +6,7 @@ import { message } from 'antd';
 import { getSelectedAccountWallet, getTransactionReceipt, getContract } from 'wan-dex-sdk-wallet';
 import sleep from 'ko-sleep';
 import BigNumber from 'bignumber.js';
-import { ecrecover, hashPersonalMessage, toBuffer, pubToAddress, fromRpcSig } from 'ethereumjs-util';
-import { sha3 } from 'web3-utils';
+import { ecrecover, hashPersonalMessage, toBuffer, pubToAddress, fromRpcSig, sha3 } from 'ethereumjs-util';
 
 let web3;
 
@@ -144,11 +143,9 @@ const getOrderSignature = async (order, exchange, baseToken, quoteToken, wallet)
   const orderHash = getOrderHash(copyedOrder);
   const signature = await wallet.signPersonalMessage(orderHash);
   console.log('signature---------:', signature);
-  // const orderSignature = '0x' + signature.slice(130) + '0'.repeat(62) + signature.slice(2, 130);
   let r = signature.slice(2, 66);
   let s = signature.slice(66, -2);
-  // console.log('r:', r, r.length,  Buffer.from(r, 'hex'));
-  // console.log('s:', s, s.length,  Buffer.from(s, 'hex'));
+  console.log('orderHash============:', orderHash);
   order.orderHash = orderHash;
   order.signature = {
     config: '0x' + signature.slice(130) + '0'.repeat(62),
@@ -239,7 +236,6 @@ const isValidSignature = (account, signature, message) => {
 
 const sha3ToHex = message => {
   return '0x' + sha3(message).toString('hex');
-  // return;
 };
 
 const EIP712_DOMAIN_TYPEHASH = sha3ToHex('EIP712Domain(string name)');
@@ -252,13 +248,14 @@ const getDomainSeparator = () => {
 };
 
 const getEIP712MessageHash = message => {
-  // console.log('getEIP712MessageHash message:', message);
+  console.log('getEIP712MessageHash message:', message);
   return sha3ToHex('0x1901' + getDomainSeparator().slice(2) + message.slice(2), {
       encoding: 'hex'
   });
 };
 
 const getOrderHash = order => {
+  console.log('order==============:',order);
   return getEIP712MessageHash(
       sha3ToHex(
           EIP712_ORDER_TYPE +

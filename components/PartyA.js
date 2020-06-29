@@ -27,6 +27,7 @@ class PartyA extends Component {
       limitChecked: false,
       limitLoading: false,
       signatureLoading: false,
+      cancelLoading: false,
     }
   }
 
@@ -163,7 +164,7 @@ class PartyA extends Component {
         buyTokenAddress,
         wallet
       );
-      
+
       makerOrdersParam.signedData = signedData;
       console.log('makerOrdersParam:', makerOrdersParam);
       this.setState({
@@ -186,6 +187,64 @@ class PartyA extends Component {
     }, err => {
       message.error('Copy failed');
     });
+  }
+
+  onCancel = async () => {
+    let exchange = dexContract;
+    const { orderData } = this.state;
+    if(orderData.length === 0) {
+      message.warn('No signed order to cancel');
+    }
+    this.setState({ cancelLoading: true });
+
+    const data = JSON.parse(orderData);
+    // console.log('data:', data);
+    const hash = data.signedData.orderHash;
+    const order = {
+      trader: data.trader, 
+      relayer: data.relayer,
+      baseToken: data.sellTokenAddress,
+      quoteToken: data.buyTokenAddress,
+      baseTokenAmount: data.baseTokenAmount,
+      quoteTokenAmount: data.quoteTokenAmount,
+      data: data.signedData.data,
+      gasTokenAmount: 0
+    };
+    // console.log('order ----:', order);
+    
+    const cancelled = await exchange.methods.cancelled(hash).call();
+    // console.log('cancelled:', cancelled);
+    if (cancelled) {
+      message.info('The order has been cancelled');
+    } else {
+      try {
+        // const res = await exchange.methods.cancelOrder(order, { from: order.trader }).call();
+        const res = await exchange.methods.cancelOrder(order).call();
+        // console.log('res:', res);
+        message.warn('Cancel order Successfully');
+      } catch (err) {
+        console.log('err:', err);
+        message.warn('Cancel order failed');
+      }
+    }
+    this.setState({ cancelLoading: false });
+
+    /* const order = {
+      trader: accounts[0],
+      relayer: '0x0000000000000000000000000000000000000000',
+      baseAsset: '0x0000000000000000000000000000000000000000',
+      quoteAsset: '0x0000000000000000000000000000000000000000',
+      baseAssetAmount: 1,
+      quoteAssetAmount: 1,
+      data: generateOrderData(1, true, false, 0, 1, 1, 0, 1, false),
+      gasTokenAmount: 0
+    };
+
+    const hash = getOrderHash(order);
+    let cancelled = await hydro.isOrderCancelled(hash);
+    assert.equal(cancelled, false);
+    const res = await hydro.cancelOrder(order, { from: order.trader }); */
+
   }
 
   render() {
@@ -230,7 +289,7 @@ class PartyA extends Component {
               <Col span={23}><p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p></Col>
             </Row>
             <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
-            <Row><Button type="slave">Cancel Order</Button></Row>
+            <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading}>Cancel Order</Button></Row>
           </div>
         </Row>
       </div>

@@ -2,7 +2,8 @@
 
 
 body {
-    /* background-color: rgba(0, 0, 0, 0.166); */
+    background: #191a38;
+    color: white;
 }
 
 p {
@@ -12,20 +13,78 @@ p {
 h3 {
     margin-top: 20px;
     margin-bottom: 20px;
+    font-size: 18px;
+    font-family: Roboto Condensed;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 56px;
 }
 
 .ant-input {
     margin-top: 9px;
     margin-bottom: 10px;
+    background: #202242;
+    border: 1px solid #4d4e71;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: white;
+}
+
+.ant-input:hover {
+    border: 1px solid #4d4e71;
+}
+
+.ant-input:focus {
+    border: 1px solid #4d4e71;
+}
+
+.ant-input[disabled] {
+    color: white;
+}
+
+.ant-select-disabled .ant-select-selection {
+    background-color: #27293e !important;
+}
+
+.ant-input-disabled {
+    background-color: #27293e !important;
+}
+
+.ant-input-disabled:hover {
+    border: 1px solid #4d4e71 !important;
+}
+
+.ant-input-disabled:focus {
+    border: 1px solid #4d4e71 !important;
 }
 
 .ant-select-selection {
     margin-top: 8px;
     margin-bottom: 8px;
+    background: #202242;
+    border: 1px solid #4d4e71;
+    border-radius: 4px;
+    color: white;
+}
+
+.ant-select-selection:hover {
+    border: 1px solid #4d4e71;
 }
 
 .ant-btn {
     width: 300px;
     height: 40px;
     margin: 10px;
+}
+
+.anticon {
+    color: white !important;
+}
+
+.anticon-loading {
+    color: #1890ff !important;
+}
+
+.ant-input-suffix {
+    color: white !important;
 }

@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import { Row, Col, Input, Button, message } from 'antd';
-import { WalletButton } from "wan-dex-sdk-wallet";
+import { WalletButton, getTransactionReceipt } from "wan-dex-sdk-wallet";
 import copy from 'clipboard-copy';
 import TokenInfo from './TokenInfo';
 import LimitInfo from './LimitInfo';
-import { getApproveState, enable, disable, buildOrder, toWei, dexContract, getTokenDecimal, getTokenBalance, isValidAddress } from '../utils/chainHelper';
+import { getApproveState, enable, disable, buildOrder, toWei, dexContract, getTokenDecimal, getTokenBalance, isValidAddress, dexScAddr } from '../utils/chainHelper';
 import styles from './style.less';
 import BigNumber from 'bignumber.js';
 
@@ -28,6 +28,7 @@ class PartyA extends Component {
       limitLoading: false,
       signatureLoading: false,
       cancelLoading: false,
+      cancelDisabled: true,
     }
   }
 
@@ -111,7 +112,7 @@ class PartyA extends Component {
 
   onClickSignature = async () => {
     try {
-      this.setState({ signatureLoading: true });
+      this.setState({ signatureLoading: true, cancelDisabled: true, });
       const { wallet } = this.props;
       const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, addressPartyA, addressPartyB, sellTokenSymbol, buyTokenSymbol } = this.state;
       if (!isValidAddress(addressPartyB) || !isValidAddress(sellTokenAddress) || !isValidAddress(buyTokenAddress)) {
@@ -170,6 +171,7 @@ class PartyA extends Component {
       this.setState({
         orderData: JSON.stringify(makerOrdersParam),
         signatureLoading: false,
+        cancelDisabled: false,
       });
       message.success('Sign order data successfully');
     } catch (e) {
@@ -190,18 +192,16 @@ class PartyA extends Component {
   }
 
   onCancel = async () => {
-    let exchange = dexContract;
     const { orderData } = this.state;
-    if(orderData.length === 0) {
+    if (orderData.length === 0) {
       message.warn('No signed order to cancel');
     }
     this.setState({ cancelLoading: true });
 
     const data = JSON.parse(orderData);
-    // console.log('data:', data);
     const hash = data.signedData.orderHash;
     const order = {
-      trader: data.trader, 
+      trader: data.trader,
       relayer: data.relayer,
       baseToken: data.sellTokenAddress,
       quoteToken: data.buyTokenAddress,
@@ -210,42 +210,53 @@ class PartyA extends Component {
       data: data.signedData.data,
       gasTokenAmount: 0
     };
-    // console.log('order ----:', order);
-    
-    const cancelled = await exchange.methods.cancelled(hash).call();
-    // console.log('cancelled:', cancelled);
+
+    const cancelled = await dexContract.methods.cancelled(hash).call();
     if (cancelled) {
       message.info('The order has been cancelled');
+      this.setState({ cancelLoading: false });
     } else {
       try {
-        // const res = await exchange.methods.cancelOrder(order, { from: order.trader }).call();
-        const res = await exchange.methods.cancelOrder(order).call();
-        // console.log('res:', res);
-        message.warn('Cancel order Successfully');
+        const encoded = await dexContract.methods.cancelOrder(order).encodeABI();
+        const params = {
+          to: dexScAddr,
+          data: encoded,
+          value: 0,
+          gasPrice: "0x3B9ACA00",
+          gasLimit: "0x989680", // 10,000,000
+        };
+        let transactionID = await this.props.wallet.sendTransaction(params);
+        this.watchTransactionStatus(transactionID, (ret) => {
+          console.log('watchTransactionStatus res:', ret);
+          if (ret) {
+            message.success('Cancel order successfully');
+          } else {
+            message.error('Cancel order failed');
+          }
+          this.setState({ cancelLoading: false });
+        });
       } catch (err) {
         console.log('err:', err);
         message.warn('Cancel order failed');
+        this.setState({ cancelLoading: false });
       }
     }
     this.setState({ cancelLoading: false });
-
-    /* const order = {
-      trader: accounts[0],
-      relayer: '0x0000000000000000000000000000000000000000',
-      baseAsset: '0x0000000000000000000000000000000000000000',
-      quoteAsset: '0x0000000000000000000000000000000000000000',
-      baseAssetAmount: 1,
-      quoteAssetAmount: 1,
-      data: generateOrderData(1, true, false, 0, 1, 1, 0, 1, false),
-      gasTokenAmount: 0
-    };
-
-    const hash = getOrderHash(order);
-    let cancelled = await hydro.isOrderCancelled(hash);
-    assert.equal(cancelled, false);
-    const res = await hydro.cancelOrder(order, { from: order.trader }); */
-
   }
+
+  watchTransactionStatus = (txID, callback) => {
+    const getTransactionStatus = async () => {
+      const tx = await getTransactionReceipt(txID);
+      if (!tx) {
+        window.setTimeout(() => getTransactionStatus(txID), 3000);
+      } else if (callback) {
+        callback(Number(tx.status) === 1);
+      } else {
+        window.alertAntd('success');
+      }
+    };
+    window.setTimeout(() => getTransactionStatus(txID), 3000);
+  };
 
   render() {
     const { addressPartyA, addressPartyB, limitChecked, limitLoading, orderData } = this.state;
@@ -289,7 +300,7 @@ class PartyA extends Component {
               <Col span={23}><p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p></Col>
             </Row>
             <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
-            <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading}>Cancel Order</Button></Row>
+            <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading} disabled={this.state.cancelDisabled}>Cancel Order</Button></Row>
           </div>
         </Row>
       </div>

@@ -266,7 +266,7 @@ class PartyA extends Component {
     return (
       <div>
         <div className={styles['border']}>
-          <Row><h3>Fill Address Information</h3></Row>
+          <Row><h3>Address Information</h3></Row>
           <Row>
             <Col span={6} className="leftLabel">
               <Row><p>Party A Address:</p></Row>

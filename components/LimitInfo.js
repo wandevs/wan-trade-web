@@ -8,7 +8,7 @@ class LimitInfo extends Component {
   render() {
     return (
       <div className={styles['border']}>
-        <Row><h3>Fill Exchange Limit</h3></Row>
+        <Row><h3>Transaction Timeout Limit</h3></Row>
         <Row>
           <Col span={8} className="leftLabel"><p>Timeout:</p></Col>
           <Col span={16} className={styles['paddingRight']}>

@@ -33,7 +33,7 @@ class Layout extends Component {
           <div className={style.title}>Private Exchange</div>
         
           <img style={{ height: "25px", margin: "3px 8px 3px 3px" }} src={networkLogo} />
-          <div className={style.gameRule} onClick={this.showGameRule}>How To Use</div>
+          <div className={style.gameRule} onClick={this.showGameRule}>Instructions</div>
           <WalletButton />
         </div>
         {this.props.selectedAccountID === 'EXTENSION' && parseInt(this.props.networkId, 10) !== parseInt(networkId, 10) && (

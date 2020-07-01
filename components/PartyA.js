@@ -281,10 +281,10 @@ class PartyA extends Component {
           </Row>
         </div>
         <Row>
-          <TokenInfo title={"Fill Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} />
+          <TokenInfo title={"Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} />
         </Row>
         <Row>
-          <TokenInfo title={"Fill Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} />
+          <TokenInfo title={"Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} />
         </Row>
         <Row>
           <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
@@ -302,7 +302,7 @@ class PartyA extends Component {
               <TextArea id="orderDataField" disabled={true} rows={4} value={orderData} />
             </Row>
             <Row>
-              <p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p>
+              <p style={{ textAlign: "left" }}>* To cancel the order, click the "Cancel Order" button below before Part B has completed their  side of the transaction.</p>
             </Row>
             <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
             <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading} disabled={this.state.cancelDisabled}>Cancel Order</Button></Row>

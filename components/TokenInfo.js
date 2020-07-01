@@ -27,6 +27,10 @@ class TokenInfo extends Component {
   onChange = (value) => {
     console.log('onChange:', value);
     let tokenAddress = "";
+    if (this.props.userAddress === '') {
+      message.warn("Please select your wallet before trade.");
+      return;
+    }
     if (value === 'Custom Token') {
       this.setState({ tokenSymbol: value, tokenAddressDisable: false, tokenAddress, loading: false, amountDisable: true, balance: "", amount: "" });
 

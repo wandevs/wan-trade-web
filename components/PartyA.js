@@ -52,6 +52,9 @@ class PartyA extends Component {
   }
 
   updateSellInfo = (sellAmount, sellTokenAddress, sellTokenSymbol) => {
+    if(this.state.addressPartyA === '') {
+      return;
+    }
     this.setState({ sellAmount, sellTokenAddress, sellTokenSymbol, limitLoading: true });
     setTimeout(async () => {
       let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA);

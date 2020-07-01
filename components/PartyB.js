@@ -37,55 +37,64 @@ class PartyB extends Component {
   }
 
   onParse = async () => {
-    this.setState({
-      parseLoading: true,
-      limitLoading: true,
-    });
-    const { orderData, timeout } = this.state;
-    let data = JSON.parse(orderData);
-    let buyBalance = await getTokenBalance(data.buyTokenAddress, data.relayer);
-    let sellBalance = await getTokenBalance(data.sellTokenAddress, data.trader);
-    let buyDecimal = await getTokenDecimal(data.buyTokenAddress);
-    let sellDecimal = await getTokenDecimal(data.sellTokenAddress);
-
-    this.setState({
-      baseToken: data.sellTokenAddress,
-      quoteToken: data.buyTokenAddress,
-      relayer: data.relayer,
-      sellData: {
-        tokenSymbol: data.buyTokenSymbol,
-        tokenAddress: data.buyTokenAddress,
-        address: data.relayer,
-        balance: buyBalance,
-        amount: fromWei(data.quoteTokenAmount, buyDecimal),
-      },
-      buyData: {
-        tokenSymbol: data.sellTokenSymbol,
-        tokenAddress: data.sellTokenAddress,
-        address: data.trader,
-        balance: sellBalance,
-        amount: fromWei(data.baseTokenAmount, sellDecimal),
-      },
-      makerOrder: data,
-      takerOrder: {
-        trader: data.relayer,
+    try {
+      this.setState({
+        parseLoading: true,
+        limitLoading: true,
+      });
+      const { orderData, timeout } = this.state;
+      let data = JSON.parse(orderData);
+      // console.log('data:', data);
+      let buyBalance = await getTokenBalance(data.buyTokenAddress, data.relayer);
+      let sellBalance = await getTokenBalance(data.sellTokenAddress, data.trader);
+      let buyDecimal = await getTokenDecimal(data.buyTokenAddress);
+      let sellDecimal = await getTokenDecimal(data.sellTokenAddress);
+  
+      this.setState({
+        baseToken: data.sellTokenAddress,
+        quoteToken: data.buyTokenAddress,
         relayer: data.relayer,
-        version: data.version,
-        side: 'buy',
-        type: data.type,
-        asMakerFeeRate: data.asMakerFeeRate,
-        asTakerFeeRate: data.asTakerFeeRate,
-        quoteTokenAmount: data.quoteTokenAmount,
-        baseTokenAmount: data.baseTokenAmount,
-        gasTokenAmount: data.gasTokenAmount,
-      },
-      makerSignedData: data.signedData,
-      parseLoading: false,
-    });
-
-    let approved = await getApproveState(data.buyTokenAddress, data.relayer);
-    approved = approved === 'ERR' ? false : approved;
-    this.setState({ limitChecked: approved, limitLoading: false });
+        sellData: {
+          tokenSymbol: data.buyTokenSymbol,
+          tokenAddress: data.buyTokenAddress,
+          address: data.relayer,
+          balance: buyBalance,
+          amount: fromWei(data.quoteTokenAmount, buyDecimal),
+        },
+        buyData: {
+          tokenSymbol: data.sellTokenSymbol,
+          tokenAddress: data.sellTokenAddress,
+          address: data.trader,
+          balance: sellBalance,
+          amount: fromWei(data.baseTokenAmount, sellDecimal),
+        },
+        makerOrder: data,
+        takerOrder: {
+          trader: data.relayer,
+          relayer: data.relayer,
+          version: data.version,
+          side: 'buy',
+          type: data.type,
+          asMakerFeeRate: data.asMakerFeeRate,
+          asTakerFeeRate: data.asTakerFeeRate,
+          quoteTokenAmount: data.quoteTokenAmount,
+          baseTokenAmount: data.baseTokenAmount,
+          gasTokenAmount: data.gasTokenAmount,
+        },
+        makerSignedData: data.signedData,
+        parseLoading: false,
+      });
+  
+      let approved = await getApproveState(data.buyTokenAddress, data.relayer);
+      approved = approved === 'ERR' ? false : approved;
+      this.setState({ limitChecked: approved, limitLoading: false });
+    } catch (err) {
+      message.warn('Failed to parse order data');
+      this.setState({
+        parseLoading: false,
+        limitLoading: false,
+      });
+    }
   }
 
   updateLimitInfo = (timeout) => {

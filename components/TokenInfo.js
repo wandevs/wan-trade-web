@@ -111,41 +111,57 @@ class TokenInfo extends Component {
         <Row><h3>{this.props.title}</h3></Row>
         <Row>
           <Col span={6} className="leftLabel">
-            <Row><p>Token:</p></Row>
-            <Row><p>Token Address:</p></Row>
-            <Row><p>Address:</p></Row>
-            <Row><p>Balance:</p></Row>
-            <Row><p>Amount:</p></Row>
+            <p>Token:</p>
           </Col>
           <Col span={18} className={styles['paddingRight']}>
-            <Row>
-              <Select style={{ width: "100%" }} disabled={isDisabled === true} onChange={this.onChange} value={data ? data.tokenSymbol : this.state.tokenSymbol}>
-                {
-                  vTokenList.map((v, i) => {
-                    return (
-                      <Option value={v.symbol} key={v.symbol}>
-                        {v.symbol}
-                      </Option>
-                    );
-                  })
-                }
-              </Select>
-            </Row>
-            <Row>
-              <Input disabled={this.state.tokenAddressDisable} value={data ? data.tokenAddress : this.state.tokenAddress} onChange={this.onTokenAddressChange} />
-            </Row>
-            <Row>
-              <Input disabled={true} value={data ? data.address : this.props.userAddress} />
-            </Row>
-            <Spin spinning={this.state.loading}>
-              <Row>
-                <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
-              </Row>
-              <Row>
-                <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
-              </Row>
-            </Spin>
+            <Select style={{ width: "100%" }} disabled={isDisabled === true} onChange={this.onChange} value={data ? data.tokenSymbol : this.state.tokenSymbol}>
+              {
+                vTokenList.map((v, i) => {
+                  return (
+                    <Option value={v.symbol} key={v.symbol}>
+                      {v.symbol}
+                    </Option>
+                  );
+                })
+              }
+            </Select>
           </Col>
+        </Row>
+        <Row>
+          <Col span={6} className="leftLabel">
+            <p>Token Address:</p>
+          </Col>
+          <Col span={18} className={styles['paddingRight']}>
+            <Input disabled={this.state.tokenAddressDisable} value={data ? data.tokenAddress : this.state.tokenAddress} onChange={this.onTokenAddressChange} />
+          </Col>
+        </Row>
+        <Row>
+          <Col span={6} className="leftLabel">
+            <p>Address:</p>
+          </Col>
+          <Col span={18} className={styles['paddingRight']}>
+            <Input disabled={true} value={data ? data.address : this.props.userAddress} />
+          </Col>
+        </Row>
+        <Row>
+          <Spin spinning={this.state.loading}>
+            <Col span={6} className="leftLabel">
+              <p>Balance:</p>
+            </Col>
+            <Col span={18} className={styles['paddingRight']}>
+              <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
+            </Col>
+          </Spin>
+        </Row>
+        <Row>
+          <Spin spinning={this.state.loading}>
+            <Col span={6} className="leftLabel">
+              <p>Amount:</p>
+            </Col>
+            <Col span={18} className={styles['paddingRight']}>
+              <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
+            </Col>
+          </Spin>
         </Row>
       </div>
     );

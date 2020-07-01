@@ -293,7 +293,7 @@ class PartyA extends Component {
           <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading} disabled={!limitChecked}>Signature Order</Button>
         </Row>
         <Row>
-          <div className={`${styles['border']} ${styles['bigPadding']}`}>
+          <div className={styles['border']}>
             <Row><h3>Signed Order Data</h3></Row>
             <Row>
               <p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the private exchange.</p>

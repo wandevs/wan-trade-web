@@ -53,22 +53,6 @@ exports.isValidAddress = function (address) {
   return /^0x[0-9a-fA-F]{40}$/i.test(address)
 }
 
-/* export const checkTokenAddress = async (tokenAddress) => {
-  try {
-    // web3.utils.isAddress
-    let isAddress = new web3.utils.toChecksumAddress(tokenAddress);
-    console.log('------', new web3.utils.toChecksumAddress);
-    console.log('isAddress------:', isAddress);
-    // let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
-    // let symbol = await erc20sc.methods.symbol().call();
-
-    console.log('symbol:', symbol);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}; */
-
 export const getTokenDecimal = async (tokenAddress) => {
   let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
   let decimals = await erc20sc.methods.decimals().call();
@@ -76,9 +60,13 @@ export const getTokenDecimal = async (tokenAddress) => {
 };
 
 export const getApproveState = async (tokenAddress, userAddress) => {
-  let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
-  let allowance = await erc20sc.methods.allowance(userAddress, proxyAddr).call();
-  return Number(allowance) > 10 ** 30;
+  try {
+    let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
+    let allowance = await erc20sc.methods.allowance(userAddress, proxyAddr).call();
+    return Number(allowance) > 10 ** 30;
+  } catch (err) {
+    return 'ERR';
+  }
 }
 
 export const enable = async (address, wallet) => {
@@ -142,19 +130,14 @@ const getOrderSignature = async (order, exchange, baseToken, quoteToken, wallet)
   copyedOrder.quoteToken = quoteToken;
   const orderHash = getOrderHash(copyedOrder);
   const signature = await wallet.signPersonalMessage(orderHash);
-  console.log('signature---------:', signature);
   let r = signature.slice(2, 66);
   let s = signature.slice(66, -2);
-  console.log('orderHash============:', orderHash);
   order.orderHash = orderHash;
   order.signature = {
     config: '0x' + signature.slice(130) + '0'.repeat(62),
     r: `0x${r}`,
     s: `0x${s}`,
-    // r: Buffer.from(r, 'hex'),
-    // s: Buffer.from(s, 'hex'),
   };
-  console.log('order.signature;', order.signature);
 };
 
 const generateOrderData = (
@@ -248,14 +231,12 @@ const getDomainSeparator = () => {
 };
 
 const getEIP712MessageHash = message => {
-  console.log('getEIP712MessageHash message:', message);
   return sha3ToHex('0x1901' + getDomainSeparator().slice(2) + message.slice(2), {
       encoding: 'hex'
   });
 };
 
 const getOrderHash = order => {
-  console.log('order==============:',order);
   return getEIP712MessageHash(
       sha3ToHex(
           EIP712_ORDER_TYPE +
@@ -278,6 +259,5 @@ export const toWei = (x, d = WanWei) => {
 };
 
 export const fromWei = (x, d = WanWei) => {
-  console.log('from wei:', x, d);
   return new BigNumber(x).div(new BigNumber(10).pow(d)).toFixed();
 };

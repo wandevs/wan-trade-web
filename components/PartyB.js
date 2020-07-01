@@ -43,12 +43,10 @@ class PartyB extends Component {
     });
     const { orderData, timeout } = this.state;
     let data = JSON.parse(orderData);
-    console.log('onParse:', data);
     let buyBalance = await getTokenBalance(data.buyTokenAddress, data.relayer);
     let sellBalance = await getTokenBalance(data.sellTokenAddress, data.trader);
     let buyDecimal = await getTokenDecimal(data.buyTokenAddress);
     let sellDecimal = await getTokenDecimal(data.sellTokenAddress);
-    console.log('unit:', sellDecimal, buyDecimal);
 
     this.setState({
       baseToken: data.sellTokenAddress,
@@ -84,8 +82,9 @@ class PartyB extends Component {
       makerSignedData: data.signedData,
       parseLoading: false,
     });
-    
+
     let approved = await getApproveState(data.buyTokenAddress, data.relayer);
+    approved = approved === 'ERR' ? false : approved;
     this.setState({ limitChecked: approved, limitLoading: false });
   }
 
@@ -140,59 +139,60 @@ class PartyB extends Component {
   }
 
   sendExchange = async () => {
-    console.log('send Exchange');
-    const {  makerSignedData, makerOrder, takerOrder, baseToken, quoteToken, relayer, sellData, buyData, limitChecked } = this.state;
-    if (!limitChecked) {
-      message.warn("Need to approve smart contract");
-      return;
-    }
-    this.setState({
-      exchangeLoading: true
-    });
-    takerOrder.expiredAtSeconds = this.getTimeout();
-    let takerSignedData = await buildOrder(
-      takerOrder,
-      dexContract,
-      // sellData.tokenAddress,
-      // buyData.tokenAddress,
-      baseToken,
-      quoteToken,
-      this.props.wallet
-    );
-    // console.log('takerOrder, makerOrder:', takerOrder, makerOrder);
-    console.log('takerSignedData, makerSignedData:', takerSignedData, [makerSignedData], [makerOrder.baseTokenAmount], {
-      baseToken: baseToken,
-      quoteToken: quoteToken,
-      relayer
-    });
-    const encoded = await dexContract.methods.matchOrders(takerSignedData, [makerSignedData], [makerOrder.baseTokenAmount], {
-      baseToken: baseToken,
-      quoteToken: quoteToken,
-      relayer
-    }).encodeABI();
-    console.log('encoded:', encoded);
-    const params = {
-      to: dexScAddr,
-      data: encoded,
-      value: 0,
-      gasPrice: "0x3B9ACA00",
-      gasLimit: "0x989680", // 10,000,000
-    };
-    console.log('params:', params);
-
-    let transactionID = await this.props.wallet.sendTransaction(params);
-    console.log('transactionID:', transactionID);
-    this.watchTransactionStatus(transactionID, (ret) => {
-      console.log('watchTransactionStatus res:', ret);
-      if (ret) {
-        message.success('Exchange successfully');
-      } else {
-        message.error('Exchange failed');
+    try {
+      const selectedAccount = this.props.selectedAccount;
+      if (selectedAccount === null) {
+        message.warn("Please select your wallet before trade.");
+        return;
+      }
+      const isLocked = selectedAccount.get('isLocked');
+      if (isLocked) {
+        message.warn("Need to unlock wallet.");
+        return;
+      }
+      const { makerSignedData, makerOrder, takerOrder, baseToken, quoteToken, relayer, limitChecked } = this.state;
+      if (!limitChecked) {
+        message.warn("Need to approve smart contract");
+        return;
       }
       this.setState({
-        exchangeLoading: false
+        exchangeLoading: true
       });
-    });
+      takerOrder.expiredAtSeconds = this.getTimeout();
+      let takerSignedData = await buildOrder(
+        takerOrder,
+        dexContract,
+        baseToken,
+        quoteToken,
+        this.props.wallet
+      );
+      const encoded = await dexContract.methods.matchOrders(takerSignedData, [makerSignedData], [makerOrder.baseTokenAmount], {
+        baseToken: baseToken,
+        quoteToken: quoteToken,
+        relayer
+      }).encodeABI();
+      const params = {
+        to: dexScAddr,
+        data: encoded,
+        value: 0,
+        gasPrice: "0x3B9ACA00",
+        gasLimit: "0x989680", // 10,000,000
+      };
+
+      let transactionID = await this.props.wallet.sendTransaction(params);
+      this.watchTransactionStatus(transactionID, (ret) => {
+        if (ret) {
+          message.success('Exchange successfully');
+        } else {
+          message.error('Exchange failed');
+        }
+        this.setState({
+          exchangeLoading: false
+        });
+      });
+    } catch (err) {
+      message.error('Exchange failed.');
+    }
   }
 
   watchTransactionStatus = (txID, callback) => {

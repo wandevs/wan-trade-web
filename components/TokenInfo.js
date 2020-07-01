@@ -51,25 +51,28 @@ class TokenInfo extends Component {
   }
 
   onTokenAddressChange = async (e) => {
-    let tokenAddress = e.target.value;
-    let isValid = isValidAddress(tokenAddress);
-    console.log('isValid:', isValid);
-    if (!isValid) {
-      this.setState({ loading: false, balance: "", tokenAddress, amountDisable: true, amount: "" });
-      return;
-    }
-    this.setState({ tokenAddress, loading: true });
-    this.props.updateInfo(this.state.amount, tokenAddress, this.state.tokenSymbol);
-    setTimeout(async () => {
-      try {
-        let balance = await getTokenBalance(tokenAddress, this.props.userAddress);
-        console.log('balance:', balance);
-        this.setState({ loading: false, balance, amountDisable: balance === 0 });
-      } catch (error) {
-        message.error('Get token balance failed, please check the token address is valid');
-        this.setState({ loading: false, balance: '', amountDisable: true, amount: "" });
+    try {
+      let tokenAddress = e.target.value;
+      let isValid = isValidAddress(tokenAddress);
+      if (!isValid) {
+        this.setState({ loading: false, balance: "", tokenAddress, amountDisable: true, amount: "" });
+        return;
       }
-    }, 0);
+      this.setState({ tokenAddress, loading: true });
+      this.props.updateInfo(this.state.amount, tokenAddress, this.state.tokenSymbol);
+      setTimeout(async () => {
+        try {
+          let balance = await getTokenBalance(tokenAddress, this.props.userAddress);
+          console.log('balance:', balance);
+          this.setState({ loading: false, balance, amountDisable: balance === 0 });
+        } catch (error) {
+          message.error('Get token balance failed, please check the token address is valid');
+          this.setState({ loading: false, balance: '', amountDisable: true, amount: "" });
+        }
+      }, 0);
+    } catch (err) {
+      message.error('Check token address failed, please check the token address is valid');
+    }
   }
 
   onTokenAmountChange = (e) => {
@@ -136,10 +139,10 @@ class TokenInfo extends Component {
             </Row>
             <Spin spinning={this.state.loading}>
               <Row>
-                <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={this.state.tokenSymbol} />
+                <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
               </Row>
               <Row>
-                <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={this.state.tokenSymbol} />
+                <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
               </Row>
             </Spin>
           </Col>

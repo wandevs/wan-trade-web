@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Row, Col, Input, Button, message } from 'antd';
-import { WalletButton, getTransactionReceipt } from "wan-dex-sdk-wallet";
+import { getTransactionReceipt } from "wan-dex-sdk-wallet";
 import copy from 'clipboard-copy';
 import TokenInfo from './TokenInfo';
 import LimitInfo from './LimitInfo';
@@ -58,6 +58,7 @@ class PartyA extends Component {
     this.setState({ sellAmount, sellTokenAddress, sellTokenSymbol, limitLoading: true });
     setTimeout(async () => {
       let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA);
+      approved = approved === 'ERR' ? false : approved;
       this.setState({ limitChecked: approved, limitLoading: false });
     }, 0);
   }
@@ -129,7 +130,6 @@ class PartyA extends Component {
       const sellBalance = await getTokenBalance(sellTokenAddress, userAddress);
       const buyDecimal = await getTokenDecimal(buyTokenAddress);
       const buyBalance = await getTokenBalance(buyTokenAddress, userAddress);
-      // console.log('sellAmount, buyAmount:', sellAmount, buyAmount, typeof (sellAmount), typeof (buyAmount));
       if (Number.isNaN(parseFloat(sellAmount)) || Number.isNaN(parseFloat(buyAmount))) {
         message.warn('Invalid amount value');
         this.setState({ signatureLoading: false });

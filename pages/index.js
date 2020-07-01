@@ -31,22 +31,13 @@ class IndexPage extends Component {
       web3.setProvider(new Web3.providers.HttpProvider(nodeUrl));
     }
     this.web3 = web3;
-    // this.lotterySC = new this.web3.eth.Contract(lotteryAbi, lotterySCAddr);
 
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  onTabChange = (key) => {
-    console.log(key);
   }
 
   render() {
     return (
       <div className={[styles.center, styles.app].join(' ')}>
-        <Tabs onChange={this.onTabChange} type="card">
+        <Tabs type="card">
           <TabPane tab="Party A" key="1">
             <PartyA selectedAccount={this.props.selectedAccount} wallet={this.props.selectedWallet} />
           </TabPane>

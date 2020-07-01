@@ -73,7 +73,7 @@ h3 {
 
 .ant-select-selection:focus {
     box-shadow: none;
-  }
+}
 
 .ant-select-dropdown {
     background: #161731;
@@ -81,12 +81,12 @@ h3 {
 
 .ant-select-dropdown-menu-item:hover {
     background: #303147;
-  }
+}
 
-  .ant-select-dropdown-menu-item {
+.ant-select-dropdown-menu-item {
     background: #1A1B2C;
     color: white;
-  }
+}
 
 .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled),
 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
@@ -99,7 +99,7 @@ h3 {
     margin: 10px;
 }
 
-.anticon {
+.ant-select-selection .anticon {
     color: white !important;
 }
 
@@ -117,8 +117,10 @@ h3 {
 
 .leftLabel {
     text-align: right;
-    
+
 }
-.leftLabel > .ant-row, .leftLabel > p {
+
+.leftLabel>.ant-row,
+.leftLabel>p {
     padding-right: 20px;
 }

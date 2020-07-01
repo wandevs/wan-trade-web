@@ -129,7 +129,7 @@ class PartyA extends Component {
       const sellDecimal = await getTokenDecimal(sellTokenAddress);
       const sellBalance = await getTokenBalance(sellTokenAddress, userAddress);
       const buyDecimal = await getTokenDecimal(buyTokenAddress);
-      const buyBalance = await getTokenBalance(buyTokenAddress, userAddress);
+      const buyBalance = await getTokenBalance(buyTokenAddress, this.state.addressPartyB);
       if (Number.isNaN(parseFloat(sellAmount)) || Number.isNaN(parseFloat(buyAmount))) {
         message.warn('Invalid amount value');
         this.setState({ signatureLoading: false });

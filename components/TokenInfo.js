@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import tokenList from "./tokenList.json";
-import { Row, Col, Input, Select, message } from 'antd';
+import { Row, Col, Input, Select, message, Spin } from 'antd';
 import styles from './style.less';
 import { getTokenBalance, isValidAddress } from '../utils/chainHelper';
 import BigNumber from 'bignumber.js';
@@ -103,16 +103,16 @@ class TokenInfo extends Component {
       <div className={styles["border"]}>
         <Row><h3>{this.props.title}</h3></Row>
         <Row>
-          <Col span={8}>
+          <Col span={6} className="leftLabel">
             <Row><p>Token:</p></Row>
             <Row><p>Token Address:</p></Row>
             <Row><p>Address:</p></Row>
             <Row><p>Balance:</p></Row>
             <Row><p>Amount:</p></Row>
           </Col>
-          <Col span={16}>
+          <Col span={18} className={styles['paddingRight']}>
             <Row>
-              <Select style={{ width: "424px" }} disabled={isDisabled === true} onChange={this.onChange} value={data ? data.tokenSymbol : this.state.tokenSymbol}>
+              <Select style={{ width: "100%" }} disabled={isDisabled === true} onChange={this.onChange} value={data ? data.tokenSymbol : this.state.tokenSymbol}>
                 {
                   vTokenList.map((v, i) => {
                     return (
@@ -130,12 +130,14 @@ class TokenInfo extends Component {
             <Row>
               <Input disabled={true} value={data ? data.address : this.props.userAddress} />
             </Row>
-            <Row>
-              <Search disabled={true} value={data ? data.balance : this.state.balance} loading={this.state.loading} />
-            </Row>
-            <Row>
-              <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={this.state.tokenSymbol} />
-            </Row>
+            <Spin spinning={this.state.loading}>
+              <Row>
+                <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={this.state.tokenSymbol} />
+              </Row>
+              <Row>
+                <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={this.state.tokenSymbol} />
+              </Row>
+            </Spin>
           </Col>
         </Row>
       </div>

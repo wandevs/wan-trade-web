@@ -11,8 +11,8 @@ p {
 }
 
 h3 {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 16px;
+    margin-bottom: 6px;
     font-size: 18px;
     font-family: Roboto Condensed;
     font-weight: 700;
@@ -71,6 +71,28 @@ h3 {
     border: 1px solid #4d4e71;
 }
 
+.ant-select-selection:focus {
+    box-shadow: none;
+  }
+
+.ant-select-dropdown {
+    background: #161731;
+}
+
+.ant-select-dropdown-menu-item:hover {
+    background: #303147;
+  }
+
+  .ant-select-dropdown-menu-item {
+    background: #1A1B2C;
+    color: white;
+  }
+
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+    background: #303147 !important;
+}
+
 .ant-btn {
     width: 300px;
     height: 40px;
@@ -85,6 +107,18 @@ h3 {
     color: #1890ff !important;
 }
 
+.ant-btn-primary .anticon-loading {
+    color: white !important;
+}
+
 .ant-input-suffix {
     color: white !important;
+}
+
+.leftLabel {
+    text-align: right;
+    
+}
+.leftLabel > .ant-row, .leftLabel > p {
+    padding-right: 20px;
 }

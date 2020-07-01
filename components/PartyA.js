@@ -265,12 +265,14 @@ class PartyA extends Component {
         <div className={styles['border']}>
           <Row><h3>Fill Address Information</h3></Row>
           <Row>
-            <Col span={8}>
+            <Col span={6} className="leftLabel">
               <Row><p>Party A Address:</p></Row>
               <Row><p>Party B Address:</p></Row>
             </Col>
-            <Col span={16}>
-              <Row><p>{addressPartyA}</p></Row>
+            <Col span={18} className={styles['paddingRight']}>
+              {
+                addressPartyA === '' ? <Row><p>Please select your wallet before trade.</p></Row> : <Row><p>{addressPartyA}</p></Row>
+              }
               <Row><Input value={addressPartyB} onChange={e => this.setState({ addressPartyB: e.target.value.toLowerCase() })} /></Row>
             </Col>
           </Row>
@@ -285,19 +287,19 @@ class PartyA extends Component {
           <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
         </Row>
         <Row>
-          <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading}>Signature Order</Button>
+          <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading} disabled={!limitChecked}>Signature Order</Button>
         </Row>
         <Row>
-          <div className={styles['border']}>
+          <div className={`${styles['border']} ${styles['bigPadding']}`}>
             <Row><h3>Signed Order Data</h3></Row>
             <Row>
-              <Col span={1}></Col>
-              <Col span={23}><p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the private exchange.</p></Col>
+              <p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the private exchange.</p>
             </Row>
-            <Row><TextArea id="orderDataField" disabled={true} rows={4} value={orderData} /></Row>
             <Row>
-              <Col span={1}></Col>
-              <Col span={23}><p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p></Col>
+              <TextArea id="orderDataField" disabled={true} rows={4} value={orderData} />
+            </Row>
+            <Row>
+              <p style={{ textAlign: "left" }}>* If you want to Cancel the Order, You can click Cancel Button below before it send to block chain by Party B.</p>
             </Row>
             <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
             <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading} disabled={this.state.cancelDisabled}>Cancel Order</Button></Row>

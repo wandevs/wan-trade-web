@@ -230,10 +230,10 @@ class PartyB extends Component {
           <TokenInfo title={"Verify Buy Token Information"} verify={true} data={this.state.buyData} isDisabled={true} />
         </Row>
         <Row>
-          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
+          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} selectionDisabled={true} />
         </Row>
         <Row>
-          <Button type="primary" onClick={this.sendExchange} loading={exchangeLoading} >Send to Exchange</Button>
+          <Button type="primary" onClick={this.sendExchange} disabled={!limitChecked} loading={exchangeLoading} >Send to Exchange</Button>
         </Row>
       </div>
     );

@@ -129,7 +129,7 @@ class TokenInfo extends Component {
         </Row>
         <Row>
           <Col span={6} className="leftLabel">
-            <p>Token Contract  Address:</p>
+            <p>Token SC Address:</p>
           </Col>
           <Col span={18} className={styles['paddingRight']}>
             <Input disabled={this.state.tokenAddressDisable} value={data ? data.tokenAddress : this.state.tokenAddress} onChange={this.onTokenAddressChange} />

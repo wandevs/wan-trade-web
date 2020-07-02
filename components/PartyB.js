@@ -107,7 +107,6 @@ class PartyB extends Component {
   }
 
   setTime = (time) => {
-    console.log('time:', time);
     let now = parseInt(Date.now() / 1000);
     let str = '';
     if (time <= now) {
@@ -123,7 +122,6 @@ class PartyB extends Component {
       time = time % 60;
       str = (days === 0 ? '' : `${days} Days `) +  (hours === 0 ? '' : `${hours} hours `) +  (minutes === 0 ? '' : `${minutes} mins `) +  (time === 0 ? '' : `${time} seconds `) + 'later';
     }
-    console.log('str:', str);
 
     this.setState({
       timer: str
@@ -240,7 +238,6 @@ class PartyB extends Component {
   watchTransactionStatus = (txID, callback) => {
     const getTransactionStatus = async () => {
       const tx = await getTransactionReceipt(txID);
-      console.log('tx:', tx);
       if (!tx) {
         window.setTimeout(() => getTransactionStatus(txID), 3000);
       } else if (callback) {

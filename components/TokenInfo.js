@@ -25,7 +25,7 @@ class TokenInfo extends Component {
   }
 
   onChange = (value) => {
-    console.log('onChange:', value);
+    // console.log('onChange:', value);
     let tokenAddress = "";
     if (this.props.userAddress === '') {
       message.warn("Please select your wallet before trade.");
@@ -63,7 +63,7 @@ class TokenInfo extends Component {
       setTimeout(async () => {
         try {
           let balance = await getTokenBalance(tokenAddress, this.props.userAddress);
-          console.log('balance:', balance);
+          // console.log('balance:', balance);
           this.setState({ loading: false, balance, amountDisable: balance === 0 });
         } catch (error) {
           message.error('Get token balance failed, please check the token address is valid');

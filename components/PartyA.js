@@ -52,7 +52,6 @@ class PartyA extends Component {
   }
 
   updateSellInfo = (sellAmount, sellTokenAddress, sellTokenSymbol) => {
-    console.log('updateSellInfo');
     if(this.state.addressPartyA === '') {
       return;
     }
@@ -61,9 +60,7 @@ class PartyA extends Component {
       return;
     }
     setTimeout(async () => {
-      console.log('getApproveState', sellTokenAddress, this.state.addressPartyA, this.state.sellAmount);
       let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA, this.state.sellAmount);
-      console.log('getApproveState:', approved);
 
       approved = approved === 'ERR' ? false : approved;
       this.setState({ limitChecked: approved, limitLoading: false });
@@ -177,7 +174,7 @@ class PartyA extends Component {
       );
 
       makerOrdersParam.signedData = signedData;
-      console.log('makerOrdersParam:', makerOrdersParam);
+      // console.log('makerOrdersParam:', makerOrdersParam);
       this.setState({
         orderData: JSON.stringify(makerOrdersParam),
         signatureLoading: false,

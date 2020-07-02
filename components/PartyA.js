@@ -52,12 +52,19 @@ class PartyA extends Component {
   }
 
   updateSellInfo = (sellAmount, sellTokenAddress, sellTokenSymbol) => {
+    console.log('updateSellInfo');
     if(this.state.addressPartyA === '') {
       return;
     }
     this.setState({ sellAmount, sellTokenAddress, sellTokenSymbol, limitLoading: true });
+    if (isNaN(Number(this.state.sellAmount))) {
+      return;
+    }
     setTimeout(async () => {
-      let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA);
+      console.log('getApproveState', sellTokenAddress, this.state.addressPartyA, this.state.sellAmount);
+      let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA, this.state.sellAmount);
+      console.log('getApproveState:', approved);
+
       approved = approved === 'ERR' ? false : approved;
       this.setState({ limitChecked: approved, limitLoading: false });
     }, 0);
@@ -99,7 +106,7 @@ class PartyA extends Component {
       try {
         let ret = false;
         if (v) {
-          ret = await enable(this.state.sellTokenAddress, this.props.wallet);
+          ret = await enable(this.state.sellTokenAddress, this.props.wallet, this.state.sellAmount);
         } else {
           ret = await disable(this.state.sellTokenAddress, this.props.wallet);
         }
@@ -287,7 +294,7 @@ class PartyA extends Component {
           <TokenInfo title={"Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} />
         </Row>
         <Row>
-          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} />
+          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} amountInfo={this.state.sellAmount.toString() + ' ' + this.state.sellTokenSymbol} />
         </Row>
         <Row>
           <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading} disabled={!limitChecked}>Signature Order</Button>

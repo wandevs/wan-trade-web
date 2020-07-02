@@ -85,7 +85,7 @@ class PartyB extends Component {
         parseLoading: false,
       });
   
-      let approved = await getApproveState(data.buyTokenAddress, data.relayer);
+      let approved = await getApproveState(data.buyTokenAddress, data.relayer, data.quoteTokenAmount);
       approved = approved === 'ERR' ? false : approved;
       this.setState({ limitChecked: approved, limitLoading: false });
     } catch (err) {
@@ -112,7 +112,7 @@ class PartyB extends Component {
       try {
         let ret = false;
         if (v) {
-          ret = await enable(sellData.tokenAddress, this.props.wallet);
+          ret = await enable(sellData.tokenAddress, this.props.wallet, this.state.sellData.amount);
         } else {
           ret = await disable(sellData.tokenAddress, this.props.wallet);
         }

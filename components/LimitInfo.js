@@ -22,9 +22,10 @@ class LimitInfo extends Component {
         </Row>
         <Row>
           <Col span={6} className="leftLabel"><p>Approve:</p></Col>
-          <Col span={18} style={{textAlign: 'left'}}>
+          <Col span={6} style={{textAlign: 'left'}}>
             <Switch style={{margin: '1em 0em', verticalAlign: 'text-top'}} checked={this.props.checked} loading={this.props.loading} onChange={this.props.onChange} />
           </Col>
+          <Col span={12}><div style={{margin: '1.1em 0em', verticalAlign: 'text-top', textAlign: 'left'}}>{this.props.amountInfo}</div></Col>
         </Row>
         <Row>
           <Col span={24}><p style={{textAlign:"left", padding: '0px 12px'}}>* You must enable switch below to approve smart contract to operate your tokens until exchange finish, otherwise the exchange will not succeed.</p></Col>

@@ -59,18 +59,20 @@ export const getTokenDecimal = async (tokenAddress) => {
   return decimals;
 };
 
-export const getApproveState = async (tokenAddress, userAddress) => {
+export const getApproveState = async (tokenAddress, userAddress, amount) => {
   try {
     let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
     let allowance = await erc20sc.methods.allowance(userAddress, proxyAddr).call();
-    return Number(allowance) > 10 ** 30;
+    console.log('allowance', allowance, web3.utils.toWei(amount.toString()));
+    return web3.utils.toBN(allowance).gte(web3.utils.toBN(web3.utils.toWei(amount.toString())));
   } catch (err) {
+    console.log(err);
     return 'ERR';
   }
 }
 
-export const enable = async (address, wallet) => {
-  let ret = await approve(address, '', 'f000000000000000000000000000000000000000000000000000000000000000', 'Enable', wallet);
+export const enable = async (address, wallet, amount) => {
+  let ret = await approve(address, '', web3.utils.toBN(web3.utils.toWei(amount.toString())).toString('hex'), 'Enable', wallet);
   return ret;
 };
 
@@ -80,17 +82,20 @@ export const disable = async (address, wallet) => {
 };
 
 export const approve = async (tokenAddress, symbol, allowance, action, wallet) => {
-  const functionSelector = '095ea7b3';
   let spender = get64BytesString(proxyAddr);
   if (spender.length !== 64) {
     return null;
   }
-
+  console.log('approve:', allowance);
+  let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
+  let data = await erc20sc.methods.approve(proxyAddr, '0x' + allowance).encodeABI();
   let params = {
     to: tokenAddress,
-    data: `0x${functionSelector}${spender}${allowance}`,
+    data,
     value: 0
   };
+
+  console.log('param', params);
 
   try {
     const txID = await wallet.sendTransaction(params);

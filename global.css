@@ -5,6 +5,7 @@ body {
     background: #191a38;
     color: white;
     font-family: sans-serif;
+    min-width: 800px;
 }
 
 p {

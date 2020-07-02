@@ -10,5 +10,13 @@
     {
         "symbol": "WWAN",
         "tokenAddress": "0x916283cc60fdaf05069796466af164876e35d21f"
+    },
+    {
+        "symbol": "WETH",
+        "tokenAddress": "0x46397994a7e1e926ea0de95557a4806d38f10b0d"
+    },
+    {
+        "symbol": "WEOS",
+        "tokenAddress": "0x57195b9d12421e963b720020483f97bb7ff2e2a6"
     }
 ]

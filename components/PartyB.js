@@ -107,6 +107,7 @@ class PartyB extends Component {
   }
 
   setTime = (time) => {
+    console.log('time:', time);
     let now = parseInt(Date.now() / 1000);
     let str = '';
     if (time <= now) {
@@ -122,6 +123,8 @@ class PartyB extends Component {
       time = time % 60;
       str = (days === 0 ? '' : `${days} Days `) +  (hours === 0 ? '' : `${hours} hours `) +  (minutes === 0 ? '' : `${minutes} mins `) +  (time === 0 ? '' : `${time} seconds `) + 'later';
     }
+    console.log('str:', str);
+
     this.setState({
       timer: str
     });
@@ -269,7 +272,7 @@ class PartyB extends Component {
           <TokenInfo title={"Verify Buy Token Information"} verify={true} data={this.state.buyData} isDisabled={true} type={"buy"} />
         </Row>
         <Row>
-          <LimitInfo part={'B'} checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} selectionDisabled={true} amountInfo={this.state.sellData ? this.state.sellData.amount + ' ' + this.state.sellData.tokenSymbol : ""} />
+          <LimitInfo part={'B'} checked={limitChecked} loading={limitLoading} timerValue={timer} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} selectionDisabled={true} amountInfo={this.state.sellData ? this.state.sellData.amount + ' ' + this.state.sellData.tokenSymbol : ""} />
         </Row>
         <Row>
           <Button type="primary" onClick={this.sendExchange} disabled={!limitChecked || timer === 'expired'} loading={exchangeLoading} >Send to Exchange</Button>

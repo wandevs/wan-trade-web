@@ -2,7 +2,7 @@ import { Component } from 'react';
 import tokenList from "./tokenList.json";
 import { Row, Col, Input, Select, message, Spin } from 'antd';
 import styles from './style.less';
-import { getTokenBalance, isValidAddress } from '../utils/chainHelper';
+import { getTokenBalance, isValidAddress, getTokenSymbol } from '../utils/chainHelper';
 import BigNumber from 'bignumber.js';
 
 const { Option } = Select;
@@ -52,14 +52,15 @@ class TokenInfo extends Component {
 
   onTokenAddressChange = async (e) => {
     try {
-      let tokenAddress = e.target.value;
+      let tokenAddress = e.target.value ? e.target.value.toLowerCase(): "";
       let isValid = isValidAddress(tokenAddress);
       if (!isValid) {
         this.setState({ loading: false, balance: "", tokenAddress, amountDisable: true, amount: "" });
         return;
       }
-      this.setState({ tokenAddress, loading: true });
-      this.props.updateInfo(this.state.amount, tokenAddress, this.state.tokenSymbol);
+      let symbol = await getTokenSymbol(tokenAddress);
+      this.setState({ tokenAddress, loading: true, tokenSymbol: symbol });
+      this.props.updateInfo(this.state.amount, tokenAddress, symbol);
       setTimeout(async () => {
         try {
           let balance = await getTokenBalance(tokenAddress, this.props.userAddress);

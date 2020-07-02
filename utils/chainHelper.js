@@ -49,6 +49,12 @@ export const getTokenBalance = async (tokenAddress, userAddress) => {
   }
 };
 
+export const getTokenSymbol = async (tokenAddress) => {
+  let erc20sc = new web3.eth.Contract(erc20abi, tokenAddress);
+  let symbol = await erc20sc.methods.symbol().call();
+  return symbol;
+}
+
 exports.isValidAddress = function (address) {
   return /^0x[0-9a-fA-F]{40}$/i.test(address)
 }

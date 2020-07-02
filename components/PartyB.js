@@ -27,6 +27,7 @@ class PartyB extends Component {
       relayer: '',
       makerSignedData: null,
       exchangeLoading: false,
+      timer: '',
     }
   }
 
@@ -44,12 +45,12 @@ class PartyB extends Component {
       });
       const { orderData, timeout } = this.state;
       let data = JSON.parse(orderData);
-      // console.log('data:', data);
+      this.setTimer(data.expiredAtSeconds);
       let buyBalance = await getTokenBalance(data.buyTokenAddress, data.relayer);
       let sellBalance = await getTokenBalance(data.sellTokenAddress, data.trader);
       let buyDecimal = await getTokenDecimal(data.buyTokenAddress);
       let sellDecimal = await getTokenDecimal(data.sellTokenAddress);
-  
+
       this.setState({
         baseToken: data.sellTokenAddress,
         quoteToken: data.buyTokenAddress,
@@ -90,11 +91,40 @@ class PartyB extends Component {
       this.setState({ limitChecked: approved, limitLoading: false });
     } catch (err) {
       message.warn('Failed to parse order data');
+      console.log('err:', err);
       this.setState({
         parseLoading: false,
         limitLoading: false,
       });
     }
+  }
+
+  setTimer = (time) => {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.setTime(time);
+    }, 1000);
+  }
+
+  setTime = (time) => {
+    let now = parseInt(Date.now() / 1000);
+    let str = '';
+    if (time <= now) {
+      str = 'expired';
+      clearInterval(this.timer);
+    } else {
+      time = time - now;
+      const days = parseInt(time / 60 / 60 / 24);
+      time = time % (60 * 60 * 24);
+      const hours = parseInt(time / 60 / 60);
+      time = time % (60 * 60);
+      const minutes = parseInt(time / 60);
+      time = time % 60;
+      str = (days === 0 ? '' : `${days} Days `) +  (hours === 0 ? '' : `${hours} hours `) +  (minutes === 0 ? '' : `${minutes} mins `) +  (time === 0 ? '' : `${time} seconds `) + 'later';
+    }
+    this.setState({
+      timer: str
+    });
   }
 
   updateLimitInfo = (timeout) => {
@@ -220,7 +250,7 @@ class PartyB extends Component {
   };
 
   render() {
-    const { limitChecked, limitLoading, exchangeLoading } = this.state;
+    const { limitChecked, limitLoading, exchangeLoading, timer } = this.state;
     return (
       <div>
         <div className={styles['border']}>
@@ -233,16 +263,16 @@ class PartyB extends Component {
           <Button type="primary" onClick={this.onParse} loading={this.state.parseLoading}>Parse</Button>
         </Row>
         <Row>
-          <TokenInfo title={"Verify Sell Token Information"} verify={true} data={this.state.sellData} isDisabled={true} />
+          <TokenInfo title={"Verify Sell Token Information"} verify={true} data={this.state.sellData} isDisabled={true} type={"sell"} />
         </Row>
         <Row>
-          <TokenInfo title={"Verify Buy Token Information"} verify={true} data={this.state.buyData} isDisabled={true} />
+          <TokenInfo title={"Verify Buy Token Information"} verify={true} data={this.state.buyData} isDisabled={true} type={"buy"} />
         </Row>
         <Row>
-          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} selectionDisabled={true} amountInfo={this.state.sellData ? this.state.sellData.amount + ' ' + this.state.sellData.tokenSymbol : ""} />
+          <LimitInfo part={'B'} checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} selectionDisabled={true} amountInfo={this.state.sellData ? this.state.sellData.amount + ' ' + this.state.sellData.tokenSymbol : ""} />
         </Row>
         <Row>
-          <Button type="primary" onClick={this.sendExchange} disabled={!limitChecked} loading={exchangeLoading} >Send to Exchange</Button>
+          <Button type="primary" onClick={this.sendExchange} disabled={!limitChecked || timer === 'expired'} loading={exchangeLoading} >Send to Exchange</Button>
         </Row>
       </div>
     );

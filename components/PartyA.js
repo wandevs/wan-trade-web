@@ -285,16 +285,16 @@ class PartyA extends Component {
           </Row>
         </div>
         <Row>
-          <TokenInfo title={"Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} />
+          <TokenInfo title={"Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} type={"sell"}/>
         </Row>
         <Row>
-          <TokenInfo title={"Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} />
+          <TokenInfo title={"Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} type={"buy"} />
         </Row>
         <Row>
-          <LimitInfo checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} amountInfo={this.state.sellAmount.toString() + ' ' + this.state.sellTokenSymbol} />
+          <LimitInfo part={'A'} checked={limitChecked} loading={limitLoading} updateInfo={this.updateLimitInfo} onChange={this.onLimitChange} amountInfo={this.state.sellAmount.toString() + ' ' + this.state.sellTokenSymbol} />
         </Row>
         <Row>
-          <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading} disabled={!limitChecked}>Signature Order</Button>
+          <Button type="primary" onClick={this.onClickSignature} loading={this.state.signatureLoading} disabled={!limitChecked}>Sign Order</Button>
         </Row>
         <Row>
           <div className={styles['border']}>
@@ -306,7 +306,7 @@ class PartyA extends Component {
               <TextArea id="orderDataField" disabled={true} rows={4} value={orderData} />
             </Row>
             <Row>
-              <p style={{ textAlign: "left" }}>* To cancel the order, click the "Cancel Order" button below before Part B has completed their  side of the transaction.</p>
+              <p style={{ textAlign: "left" }}>* To cancel the order, click the "Cancel Order" button below before Party B has completed their  side of the transaction.</p>
             </Row>
             <Row><Button type="primary" onClick={this.onCopyData}>Copy Data</Button></Row>
             <Row><Button type="slave" onClick={this.onCancel} loading={this.state.cancelLoading} disabled={this.state.cancelDisabled}>Cancel Order</Button></Row>

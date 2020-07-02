@@ -100,7 +100,7 @@ class TokenInfo extends Component {
   }
 
   render() {
-    const { data, isDisabled } = this.props;
+    const { data, isDisabled, type } = this.props;
     let vTokenList = tokenList.slice();
     vTokenList.push({
       "symbol": "Custom Token",
@@ -129,7 +129,7 @@ class TokenInfo extends Component {
         </Row>
         <Row>
           <Col span={6} className="leftLabel">
-            <p>Token Address:</p>
+            <p>Token Contract  Address:</p>
           </Col>
           <Col span={18} className={styles['paddingRight']}>
             <Input disabled={this.state.tokenAddressDisable} value={data ? data.tokenAddress : this.state.tokenAddress} onChange={this.onTokenAddressChange} />
@@ -137,7 +137,7 @@ class TokenInfo extends Component {
         </Row>
         <Row>
           <Col span={6} className="leftLabel">
-            <p>Address:</p>
+            <p>Wallet Address:</p>
           </Col>
           <Col span={18} className={styles['paddingRight']}>
             <Input disabled={true} value={data ? data.address : this.props.userAddress} />
@@ -146,7 +146,7 @@ class TokenInfo extends Component {
         <Row>
           <Spin spinning={this.state.loading}>
             <Col span={6} className="leftLabel">
-              <p>Balance:</p>
+              <p>Current Balance:</p>
             </Col>
             <Col span={18} className={styles['paddingRight']}>
               <Input disabled={true} value={data ? data.balance : this.state.balance} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />
@@ -156,7 +156,9 @@ class TokenInfo extends Component {
         <Row>
           <Spin spinning={this.state.loading}>
             <Col span={6} className="leftLabel">
-              <p>Amount:</p>
+              {
+                type === 'sell' ? <p>Sell Amount:</p> : <p>Buy Amount:</p>
+              }
             </Col>
             <Col span={18} className={styles['paddingRight']}>
               <Input disabled={isDisabled || this.props.verify || this.state.amountDisable} value={data ? data.amount : this.state.amount} onChange={this.onTokenAmountChange} suffix={data ? data.tokenSymbol : this.state.tokenSymbol} />

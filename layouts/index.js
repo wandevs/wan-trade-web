@@ -21,7 +21,7 @@ class Layout extends Component {
   }
 
   showGameRule = () => {
-    window.open("https://github.com/wandevs/wan-game/blob/master/GameRule.md");
+    window.open("https://github.com/wandevs/p2pe-web/blob/master/user-guide.md");
   }
 
   render() {

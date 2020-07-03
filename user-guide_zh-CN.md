@@ -109,7 +109,7 @@ Tom看到了Lucy的帖子，想要与她完成交易，于是他们双方沟通�
 
 # 4. 备注
 
-详细安全分析和工作原理见：URL
+详细安全分析和工作原理见：[P2PE工作原理](./principle_zh-CN.md) .
 
 智能合约地址：
 
@@ -119,3 +119,7 @@ Tom看到了Lucy的帖子，想要与她完成交易，于是他们双方沟通�
 | 主网  | Exchange |0xf0ff1d294e8ce926000ff2cb0a171ca434a5af16|
 | 测试网  | Proxy |0x9e57b9f1d836ff1701e441a619cbaad7fc8863d3|
 | 测试网  | Exchange |0x8786038ef9c2f659772c6c2ee8402bdfdc511bb8|
+
+智能合约源码地址：
+
+[https://github.com/wandevs/wandex-smart-contract/tree/v1.1](https://github.com/wandevs/wandex-smart-contract/tree/v1.1)

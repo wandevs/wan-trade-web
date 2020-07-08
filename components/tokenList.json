@@ -1,11 +1,11 @@
 [
     {
         "symbol": "WWAN",
-        "tokenAddress": "0xDABd997Ae5e4799be47D6e69d9431615cbA28F48"
+        "tokenAddress": "0xdabd997ae5e4799be47d6e69d9431615cba28f48"
     },
     {
         "symbol": "WETH",
-        "tokenAddress": "0x28362cD634646620Ef2290058744f9244Bb90ED9"
+        "tokenAddress": "0x28362cd634646620ef2290058744f9244bb90ed9"
     },
     {
         "symbol": "WBTC",
@@ -13,15 +13,15 @@
     },
     {
         "symbol": "WEOS",
-        "tokenAddress": "0x81862B7622ceD0deFb652aDDD4E0C110205b0040"
+        "tokenAddress": "0x81862b7622ced0defb652addd4e0c110205b0040"
     },
     {
         "symbol": "WUSDT",
-        "tokenAddress": "0x50b48106225E60d2bC2eD1E7c55517344E5234FE"
+        "tokenAddress": "0x50b48106225e60d2bc2ed1e7c55517344e5234fe"
     },
     {
         "symbol": "FNX",
-        "tokenAddress": "0xc6f4465a6A521124c8E3096b62575C157999d361"
+        "tokenAddress": "0xc6f4465a6a521124c8e3096b62575c157999d361"
     },
     {
         "symbol": "WUSDC",
@@ -29,38 +29,38 @@
     },
     {
         "symbol": "WTUSD",
-        "tokenAddress": "0x79562c955dEA8A801f057A386c9aA9f5D9Bf0f92"
+        "tokenAddress": "0x79562c955dea8a801f057a386c9aa9f5d9bf0f92"
     },
     {
         "symbol": "RVX",
-        "tokenAddress": "0xcb72EF349870780Fdc4786e8c86AaB5B4Fa36B73"
+        "tokenAddress": "0xcb72ef349870780fdc4786e8c86aab5b4fa36b73"
     },
     {
         "symbol": "WMKR",
-        "tokenAddress": "0x350bb91C9C8Ef4e8C0e19fbdc6A90A24bcb1eC2A"
+        "tokenAddress": "0x350bb91c9c8ef4e8c0e19fbdc6a90a24bcb1ec2a"
     },
     {
         "symbol": "WGUSD",
-        "tokenAddress": "0xf13157514786E037849b5E42217e13dda86bA90e"
+        "tokenAddress": "0xf13157514786e037849b5e42217e13dda86ba90e"
     },
     {
         "symbol": "WSAI",
-        "tokenAddress": "0x41c8b92Df1552ACD976dB7d0c9Bc269F3C45B0F5"
+        "tokenAddress": "0x41c8b92df1552acd976db7d0c9bc269f3c45b0f5"
     },
     {
         "symbol": "WLINK",
-        "tokenAddress": "0xacEe80F83343c2C13Afb6e89E8740699AEa3D7E8"
+        "tokenAddress": "0xacee80f83343c2c13afb6e89e8740699aea3d7e8"
     },
     {
         "symbol": "WLRC",
-        "tokenAddress": "0x0f2e7C0E904a525A24FF6f658053f6bA5Ce7A209"
+        "tokenAddress": "0x0f2e7c0e904a525a24ff6f658053f6ba5ce7a209"
     },
     {
         "symbol": "WZXC",
-        "tokenAddress": "0x6fd293974757361e22be9F40eb54667b708D6a82"
+        "tokenAddress": "0x6fd293974757361e22be9f40eb54667b708d6a82"
     },
     {
         "symbol": "WEURS",
-        "tokenAddress": "0x3bD5B682224B26994509c9c5E87379F4C48aF0F5"
+        "tokenAddress": "0x3bd5b682224b26994509c9c5e87379f4c48af0f5"
     }
 ]

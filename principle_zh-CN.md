@@ -38,6 +38,10 @@ Proxy可以且仅能被Exchange合约调用，进行token资产转移。Proxy在
 
 智能合约代码和前端代码完全开源，可接受所有用户的审查和监督。
 
+[智能合约](https://github.com/wandevs/wandex-smart-contract/tree/v1.1)
+
+[前端页面](https://github.com/wandevs/p2pe-web)
+
 # 3. 安全签名
 
 用户在将交易订单信息发送至智能合约之前，对所有关键信息使用安全加密算法进行私钥签名，保证任何信息无法被它人篡改，保证了交易的安全。
@@ -51,8 +55,8 @@ Proxy可以且仅能被Exchange合约调用，进行token资产转移。Proxy在
 |3|data|超时时间|
 |4|baseTokenAmount|基础token数量|
 |5|baseTokenAddress|基础token地址|
-|6|quotaTokenAmount|报价token数量|
-|7|quotaTokenAddress|报价token地址|
+|6|quoteTokenAmount|报价token数量|
+|7|quoteTokenAddress|报价token地址|
 
 通过对上述信息进行哈希和签名，可以锁定交易人、上链人、交易币种、交易数额、超时时间等全部涉及到交易安全的关键信息。
 

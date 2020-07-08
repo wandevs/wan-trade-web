@@ -3,13 +3,13 @@
 
 # 1. Overview
 
-**Pain points for cryptocurrency traders:**
+**Pain points for crypto currency traders:**
 
 **DEX and CEX: price slippage and inability to set transaction participants** – When users are trading on ordinary centralized/decentralized exchanges, it is impossible for traders to specify who they want to trade with. It is also impossible to guarantee that a transaction will occur at their desired price target. With large one time transactions in particular, price slippage is a major issue, and even the largest of exchanges don’t have the required liquidity to prevent serious slippage for large single transactions. 
 
 **HTLC based cross-chain trades: trust burden and delays** – Ethereum HTLC transactions require that both parties in the transaction trust the transactions contracts. While the burden of trust for cross-chain HTLC transactions is even greater as each pair of cross-chain contracts supports transactions only for a single pair of chains. This means that users must trust each pair of cross-chain contracts for each pair of chains. As there is a possibility for smart contract owners to behave maliciously, this means users must place a great deal of trust in all these contracts. Moreover if a party wants to cancel or withdraw funds during HTLC contract transactions, there may be significant delays.
 
-Our peer to peer private exchange platform (referred to as P2PE going forward), solves the above-mentioned pain points securely and effectively. Building on top of Wanchain’s cross-chain functionality, P2PE is able to safely and reliably meet the needs of multi-chain cryptocurrency traders. 
+Our peer to peer private exchange platform (referred to as P2PE going forward), solves the above-mentioned pain points securely and effectively. Building on top of Wanchain’s cross-chain functionality, P2PE is able to safely and reliably meet the needs of multi-chain crypto currency traders. 
 
 **P2PE Features:**
 
@@ -21,13 +21,13 @@ Our peer to peer private exchange platform (referred to as P2PE going forward), 
 
     4) Dual security guarantee based on both HTLC (Hash Time Locking Contract) andToken Approve.
 
-    5) The order can be cancelled at any time before it is finalized on chain. Afterthe cancellation, the order is no longer available and there is no delay fortoken withdrawal.
+    5) The order can be cancelled at any time before it is finalized on chain. After the cancellation, the order is no longer available and there is no delay for token withdrawal.
 
-    6) Order transaction information is not visible through the UI, it is onlyvisible through on-chain data.
+    6) Order transaction information is not visible through the UI, it is only visible through on-chain data.
 
-    7) Doesn’t require sending of tokens to an online wallet of contract addressprior to transaction. Transactions can be executed directly from user’s wallet(with Ledger hardware wallet support).
+    7) Doesn’t require sending of tokens to an online wallet of contract address prior to transaction. Transactions can be executed directly from user’s wallet(with Ledger hardware wallet support).
 
-    8) Multi-chain and multi-currency transactions can be supported throughWanchain’s cross-chain tech.
+    8) Multi-chain and multi-currency transactions can be supported through Wanchain’s cross-chain tech.
 
 # 2. Smart contracts
 

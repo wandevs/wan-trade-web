@@ -38,7 +38,7 @@ class Layout extends Component {
         </div>
         {this.props.selectedAccountID === 'EXTENSION' && parseInt(this.props.networkId, 10) !== parseInt(networkId, 10) && (
           <div className="network-warning bg-warning text-white text-center" style={{ padding: 4, backgroundColor: "red", textAlign:"center" }}>
-            Please be noted that you are currently choosing the Testnet for WanMask and shall switch to Mainnet for playing Wandora.
+            Please be noted that you are currently choosing the Testnet for WanMask and shall switch to Mainnet for using P2PE.
           </div>
         )}
         {this.props.children}

@@ -73,6 +73,7 @@ class TokenInfo extends Component {
       }, 0);
     } catch (err) {
       message.error('Check token address failed, please check the token address is valid');
+      console.log(err);
     }
   }
 

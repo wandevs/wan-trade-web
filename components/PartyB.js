@@ -4,6 +4,7 @@ import { WalletButtonLong, getTransactionReceipt } from "wan-dex-sdk-wallet";
 import TokenInfo from './TokenInfo';
 import LimitInfo from './LimitInfo';
 import { enable, disable, getTokenBalance, getTokenDecimal, fromWei, dexContract, buildOrder, dexScAddr, getApproveState } from '../utils/chainHelper';
+import tokenList from "./tokenList.json";
 
 import styles from './style.less';
 
@@ -31,6 +32,16 @@ class PartyB extends Component {
     }
   }
 
+  inTokenList = (token) => {
+    for (let i=0; i<tokenList.length; i++) {
+      if (token.toLowerCase() === tokenList[i].tokenAddress.toLowerCase()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   onChange = (e) => {
     this.setState({
       orderData: e.target.value
@@ -50,6 +61,16 @@ class PartyB extends Component {
       let sellBalance = await getTokenBalance(data.sellTokenAddress, data.trader);
       let buyDecimal = await getTokenDecimal(data.buyTokenAddress);
       let sellDecimal = await getTokenDecimal(data.sellTokenAddress);
+
+      if (!this.inTokenList(data.sellTokenAddress)) {
+        message.warn("BuyTokenAddress is a custom smart contract address. ");
+        message.warn("Please verify the exact token contract address through https://www.wanscan.org/tokens that it belongs to the token you intend to be trading.");
+      }
+
+      if (!this.inTokenList(data.buyTokenAddress)) {
+        message.warn("SellTokenAddress is a custom smart contract address. ");
+        message.warn("Please verify the exact token contract address through https://www.wanscan.org/tokens that it belongs to the token you intend to be trading.");
+      }
 
       this.setState({
         baseToken: data.sellTokenAddress,

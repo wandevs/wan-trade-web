@@ -300,7 +300,7 @@ class PartyA extends Component {
           <div className={styles['border']}>
             <Row><h3>Signed Order Data</h3></Row>
             <Row>
-              <p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the private exchange.</p>
+              <p style={{ textAlign: "left" }}>* Please copy the signed order data below and send it to Party B to complete the P2P exchange.</p>
             </Row>
             <Row>
               <TextArea id="orderDataField" disabled={true} rows={4} value={orderData} />

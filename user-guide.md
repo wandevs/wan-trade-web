@@ -120,3 +120,55 @@ For detailed security analysis and working principle see:
 
 [P2P Exchange Working Principles](./P2P_Exchange_Working_Principles.md)
 
+# 5. Q&A
+
+**Question 1: What are the advantages of P2PE over ordinary HTLC trading products on Ethereum?**
+
+Answer: 
+
+P2PE has the following four advantages over ordinary HTLC trading products on Ethereum:
+
+1) By taking advantage Wanchain’s cross-chain features, P2PE can power multi-currency and multi-chain trading without the need to trust any third party mediator.
+ 
+2) There is no need to deposit tokens in a smart contract prior to the transaction, which improves security and increases user control.
+
+3) Both parties to the transaction use the same smart contract transaction, and the contract code is open and transparent.
+
+4) The transaction initiator Party A can cancel the transaction at any time before Party B completes the transaction without any delay
+
+**Question 2: Why should P2PE users manually click on the approve switch to perform asset authorization operations on smart contracts instead of completing them automatically in the background?**
+
+Answer: 
+
+Because the authorization switch is a safety guarantee for the user's transaction, the user can cancel the transaction by manually turning off the authorization switch at any time to protect the asset from loss. On the other hand, because the Approve operation gives a high level of control over user assets to the smart contract, the user should perform the operation deliberately and with full understanding.
+
+**Question 3: Is there no fee for P2PE transactions?**
+
+Answer: 
+
+When using P2PE for WRC20 token transactions, there is no fee at all, but if users need to perform a cross-chain transaction first and then trade, they need to pay a small amount of cross-chain fees.
+
+**Question 4: Are P2PE products completely open source? Can P2PE be ported to Ethereum to work?**
+
+Answer: 
+
+The smart contract code and front-end code are completely open source and can be ported to Ethereum to work, but after the porting, they will not have cross-chain functions. In the future, after the Wanchain’s bidirectional  cross-chain bridge is complete, cross-chain transactions can also be performed on Ethereum. However, transaction fees are much more expensive than Wanchain, and also much slower.
+
+**Question 5: When should I toggle the “Approve” button on P2PE, and when can I cancel it?**
+
+Answer: 
+
+As long as the transaction is successfully completed, it can be canceled.
+
+Question 6: What is the relationship between P2PE and Wandex?
+
+Answer: 
+
+P2PE is an independent DApp that does not depend on Wandex, but the on-chain settlement part uses Wandex’s smart contracts. This smart contract does not restrict users, any DApp developed by anyone can use it to complete on-chain settlement transactions.
+
+**Question 7: For the P2PE "Approve" operation, if I Approve, but do not cancel the Approve operation, will it automatically cancel the Approve operation at some time?**
+
+Answer:
+
+No, it will not automatically cancel. It works like the wandex. but wandex approve a big amount, P2PE only approve the amount you want to trade.
+If you trade 10 WWAN, it approve only 10WWAN, it turns to zero when you trade finish.

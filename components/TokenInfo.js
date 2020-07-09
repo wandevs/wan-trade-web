@@ -2,7 +2,7 @@ import { Component } from 'react';
 import tokenList from "./tokenList.json";
 import { Row, Col, Input, Select, message, Spin } from 'antd';
 import styles from './style.less';
-import { getTokenBalance, isValidAddress, getTokenSymbol } from '../utils/chainHelper';
+import { getTokenBalance, getTokenDecimal, isValidAddress, getTokenSymbol } from '../utils/chainHelper';
 import BigNumber from 'bignumber.js';
 
 const { Option } = Select;
@@ -18,6 +18,7 @@ class TokenInfo extends Component {
       tokenAddress: "",
       balance: "",
       amount: "",
+      decimal: 0,
       tokenAddressDisable: true,
       loading: false,
       amountDisable: true
@@ -25,7 +26,6 @@ class TokenInfo extends Component {
   }
 
   onChange = (value) => {
-    // console.log('onChange:', value);
     let tokenAddress = "";
     if (this.props.userAddress === '') {
       message.warn("Please select your wallet before trade.");
@@ -33,15 +33,15 @@ class TokenInfo extends Component {
     }
     if (value === 'Custom Token') {
       this.setState({ tokenSymbol: value, tokenAddressDisable: false, tokenAddress, loading: false, amountDisable: true, balance: "", amount: "" });
-
     } else {
       tokenAddress = (tokenList.find((v, i) => { return v.symbol === value })).tokenAddress;
-      this.setState({ tokenSymbol: value, tokenAddressDisable: true, tokenAddress, loading: true, amountDisable: true });
-      this.props.updateInfo(this.state.amount, tokenAddress, this.state.tokenSymbol);
+      this.setState({ tokenSymbol: value, tokenAddressDisable: true, tokenAddress, loading: true, amount: 0, amountDisable: true });
+      this.props.updateInfo(this.state.amount, tokenAddress, value);
       setTimeout(async () => {
         try {
           let balance = await getTokenBalance(tokenAddress, this.props.userAddress);
-          this.setState({ loading: false, balance, amountDisable: false });
+          let decimal = await getTokenDecimal(tokenAddress);
+          this.setState({ loading: false, balance, decimal, amountDisable: false });
         } catch (error) {
           message.warn("Get token balance failed");
           this.setState({ loading: false });
@@ -52,7 +52,7 @@ class TokenInfo extends Component {
 
   onTokenAddressChange = async (e) => {
     try {
-      let tokenAddress = e.target.value ? e.target.value.toLowerCase(): "";
+      let tokenAddress = e.target.value ? e.target.value.toLowerCase() : "";
       let isValid = isValidAddress(tokenAddress);
       if (!isValid) {
         this.setState({ loading: false, balance: "", tokenAddress, amountDisable: true, amount: "" });
@@ -64,7 +64,6 @@ class TokenInfo extends Component {
       setTimeout(async () => {
         try {
           let balance = await getTokenBalance(tokenAddress, this.props.userAddress);
-          // console.log('balance:', balance);
           this.setState({ loading: false, balance, amountDisable: balance === 0 });
         } catch (error) {
           message.error('Get token balance failed, please check the token address is valid');
@@ -88,7 +87,16 @@ class TokenInfo extends Component {
       return;
     }
 
-    let balance = this.state.balance;
+    const { balance, decimal } = this.state;
+    if (amount.includes('.')) {
+      let splitAmount = amount.split('.')[1];
+      if (splitAmount.length > decimal) {
+        message.warn("The Token's decimal is " + decimal);
+        return;
+      }
+    }
+
+
     if (balance !== '') {
       if (new BigNumber(amount).gt(balance)) {
         message.warn("Amount out of balance");

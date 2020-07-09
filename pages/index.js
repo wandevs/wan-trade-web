@@ -39,7 +39,7 @@ class IndexPage extends Component {
       <div className={[styles.center, styles.app].join(' ')}>
         <Tabs type="card">
           <TabPane tab="Party A" key="1">
-            <PartyA selectedAccount={this.props.selectedAccount} wallet={this.props.selectedWallet} />
+            <PartyA selectedAccount={this.props.selectedAccount} address={this.props.selectedAccount ? this.props.selectedAccount.get('address') : ''} wallet={this.props.selectedWallet} />
           </TabPane>
           <TabPane tab="Party B" key="2">
             <PartyB selectedAccount={this.props.selectedAccount} wallet={this.props.selectedWallet} />

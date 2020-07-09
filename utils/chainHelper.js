@@ -71,7 +71,6 @@ export const getApproveState = async (tokenAddress, userAddress, amount) => {
     let allowance = await erc20sc.methods.allowance(userAddress, proxyAddr).call();
     return web3.utils.toBN(allowance).gte(web3.utils.toBN(web3.utils.toWei(amount.toString())));
   } catch (err) {
-    console.log(err);
     return 'ERR';
   }
 }

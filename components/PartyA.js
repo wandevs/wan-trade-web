@@ -20,7 +20,6 @@ class PartyA extends Component {
       buyAmount: '',
       buyTokenSymbol: '',
       buyTokenAddress: '',
-      addressPartyA: '',
       addressPartyB: '',
       orderData: '',
       timeout: '10min',
@@ -32,27 +31,12 @@ class PartyA extends Component {
     }
   }
 
-  componentDidMount() {
-    if (this.props.selectedAccount) {
-      this.setState({
-        addressPartyA: this.props.selectedAccount.get('address')
-      })
-    }
-  }
-
-  componentWillUpdate(props) {
-    const address = this.props.selectedAccount ? this.props.selectedAccount.get('address') : "Select Address in Right-Top Wallet Button";
-    if (address !== this.state.addressPartyA) {
-      this.setState({ addressPartyA: address });
-    }
-  }
-
   updateBuyInfo = (buyAmount, buyTokenAddress, buyTokenSymbol) => {
     this.setState({ buyAmount, buyTokenAddress, buyTokenSymbol });
   }
 
   updateSellInfo = (sellAmount, sellTokenAddress, sellTokenSymbol) => {
-    if(this.state.addressPartyA === '') {
+    if(this.props.address === '') {
       return;
     }
     this.setState({ sellAmount, sellTokenAddress, sellTokenSymbol, limitLoading: true });
@@ -60,7 +44,7 @@ class PartyA extends Component {
       return;
     }
     setTimeout(async () => {
-      let approved = await getApproveState(sellTokenAddress, this.state.addressPartyA, this.state.sellAmount);
+      let approved = await getApproveState(sellTokenAddress, this.props.address, this.state.sellAmount);
 
       approved = approved === 'ERR' ? false : approved;
       this.setState({ limitChecked: approved, limitLoading: false });
@@ -122,7 +106,7 @@ class PartyA extends Component {
     try {
       this.setState({ signatureLoading: true, cancelDisabled: true, });
       const { wallet } = this.props;
-      const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, addressPartyA, addressPartyB, sellTokenSymbol, buyTokenSymbol } = this.state;
+      const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, addressPartyB, sellTokenSymbol, buyTokenSymbol } = this.state;
       if (!isValidAddress(addressPartyB) || !isValidAddress(sellTokenAddress) || !isValidAddress(buyTokenAddress)) {
         message.warn('Invalid address');
         this.setState({ signatureLoading: false });
@@ -147,7 +131,7 @@ class PartyA extends Component {
       }
 
       let makerOrdersParam = {
-        trader: addressPartyA,
+        trader: this.props.address,
         relayer: addressPartyB,
         version: 2,
         side: 'sell',
@@ -174,7 +158,6 @@ class PartyA extends Component {
       );
 
       makerOrdersParam.signedData = signedData;
-      // console.log('makerOrdersParam:', makerOrdersParam);
       this.setState({
         orderData: JSON.stringify(makerOrdersParam),
         signatureLoading: false,
@@ -266,7 +249,8 @@ class PartyA extends Component {
   };
 
   render() {
-    const { addressPartyA, addressPartyB, limitChecked, limitLoading, orderData } = this.state;
+    const { addressPartyB, limitChecked, limitLoading, orderData } = this.state;
+    const { address } = this.props;
     return (
       <div>
         <div className={styles['border']}>
@@ -278,14 +262,14 @@ class PartyA extends Component {
             </Col>
             <Col span={18} className={styles['paddingRight']}>
               {
-                addressPartyA === '' ? <Row><p>Please select your wallet before trade.</p></Row> : <Row><p>{addressPartyA}</p></Row>
+                address === '' ? <Row><p>Please select your wallet before trade.</p></Row> : <Row><p className={styles['partyAAddress']}>{address}</p></Row>
               }
               <Row><Input value={addressPartyB} onChange={e => this.setState({ addressPartyB: e.target.value.toLowerCase() })} /></Row>
             </Col>
           </Row>
         </div>
         <Row>
-          <TokenInfo title={"Sell Token Information"} userAddress={addressPartyA} updateInfo={this.updateSellInfo} type={"sell"}/>
+          <TokenInfo title={"Sell Token Information"} userAddress={address} updateInfo={this.updateSellInfo} type={"sell"}/>
         </Row>
         <Row>
           <TokenInfo title={"Buy Token Information"} userAddress={addressPartyB} updateInfo={this.updateBuyInfo} type={"buy"} />

@@ -9,9 +9,9 @@
 
 **HTLC based cross-chain trades: trust burden and delays** – Ethereum HTLC transactions require that both parties in the transaction trust the transactions contracts. While the burden of trust for cross-chain HTLC transactions is even greater as each pair of cross-chain contracts supports transactions only for a single pair of chains. This means that users must trust each pair of cross-chain contracts for each pair of chains. As there is a possibility for smart contract owners to behave maliciously, this means users must place a great deal of trust in all these contracts. Moreover if a party wants to cancel or withdraw funds during HTLC contract transactions, there may be significant delays.
 
-Our peer to peer private exchange platform (referred to as P2PE going forward), solves the above-mentioned pain points securely and effectively. Building on top of Wanchain’s cross-chain functionality, P2PE is able to safely and reliably meet the needs of multi-chain crypto currency traders. 
+Our peer to peer private exchange platform (referred to as WanSwap going forward), solves the above-mentioned pain points securely and effectively. Building on top of Wanchain’s cross-chain functionality, WanSwap is able to safely and reliably meet the needs of multi-chain crypto currency traders. 
 
-**P2PE Features:**
+**WanSwap Features:**
 
     1) 0 transaction fee for all orders.
 
@@ -31,7 +31,7 @@ Our peer to peer private exchange platform (referred to as P2PE going forward), 
 
 # 2. Smart contracts
 
-P2PE guarantees the security of transactions through smart contracts, and directly reuses the secure, mature and verified contract codes of WANDEX, primarily involving 2 contracts: Proxy and Exchange.
+WanSwap guarantees the security of transactions through smart contracts, and directly reuses the secure, mature and verified contract codes of WANDEX, primarily involving 2 contracts: Proxy and Exchange.
 
 The Exchange contract verifies the user input information and the signature of the information. After verifying the user's token balance, the Proxy contract is called to complete the atomic transfer of user assets according to the user’s input information.
 
@@ -43,7 +43,7 @@ The smart contract code and front-end code are completely open source and open t
 
 [Smart contracts](https://github.com/wandevs/wandex-smart-contract/tree/v1.1)
 
-[front-end](https://github.com/wandevs/p2pe-web)
+[front-end](https://github.com/wandevs/wanswap-web)
 
 # 3. Secure signature
 
@@ -79,7 +79,7 @@ In a complete transaction process, two users, Party A and Party B are involved. 
 
     4) Party A sends the signed order data to Party B through off-chain means (email, messaging software, etc.).
 
-    5) Party B pastes the order data sent from Party A in the appropriate field in the P2PE interface in order to verify the data. Party A’s original input data will be displayed, and Party B may check the token type and amount to confirm.
+    5) Party B pastes the order data sent from Party A in the appropriate field in the WanSwap interface in order to verify the data. Party A’s original input data will be displayed, and Party B may check the token type and amount to confirm.
 
     6) After Party B verifies that Party A’s data is correct, Party B uses the data to generate the corresponding order and signs it. Then Party B needs to perform the Approve operation for the Proxy smart contract on chain in order to authorize it to transact with Party B’s tokens.  
 
@@ -89,4 +89,4 @@ In a complete transaction process, two users, Party A and Party B are involved. 
 
 # 5. Conclusion
 
-P2PE is a well-designed decentralized application that can safely and reasonably meet user transaction needs.
+WanSwap is a well-designed decentralized application that can safely and reasonably meet user transaction needs.

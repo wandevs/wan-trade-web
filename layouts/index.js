@@ -21,7 +21,7 @@ class Layout extends Component {
   }
 
   showGameRule = () => {
-    window.open("https://github.com/wandevs/p2pe-web/blob/master/user-guide.md");
+    window.open("https://github.com/wandevs/wanswap-web/blob/master/user-guide.md");
   }
 
   render() {
@@ -30,7 +30,7 @@ class Layout extends Component {
         <div className={style.header}>
           <Wallet title="Wan Game" nodeUrl={nodeUrl} />
           <img className={style.logo} width="28px" height="28px" src={require('../public/p2pe-logo2.png')} alt="Logo" />
-          <div className={style.title}>P2P Exchange</div>
+          <div className={style.title}>WanSwap</div>
         
           <img style={{ height: "25px", margin: "3px 8px 3px 3px" }} src={networkLogo} />
           <div className={style.gameRule} onClick={this.showGameRule}>Instructions</div>
@@ -38,7 +38,7 @@ class Layout extends Component {
         </div>
         {this.props.selectedAccountID === 'EXTENSION' && parseInt(this.props.networkId, 10) !== parseInt(networkId, 10) && (
           <div className="network-warning bg-warning text-white text-center" style={{ padding: 4, backgroundColor: "red", textAlign:"center" }}>
-            Please be noted that you are currently choosing the Testnet for WanMask and shall switch to Mainnet for using P2PE.
+            Please be noted that you are currently choosing the Testnet for WanMask and shall switch to Mainnet for using WanSwap.
           </div>
         )}
         {this.props.children}

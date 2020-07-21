@@ -40,7 +40,7 @@ Proxy可以且仅能被Exchange合约调用，进行token资产转移。Proxy在
 
 [智能合约](https://github.com/wandevs/wandex-smart-contract/tree/v1.1)
 
-[前端页面](https://github.com/wandevs/p2pe-web)
+[前端页面](https://github.com/wandevs/wanswap-web)
 
 # 3. 安全签名
 

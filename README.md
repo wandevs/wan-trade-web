@@ -1,4 +1,4 @@
-# P2P Exchange
+# WanSwap
 
 ## Getting Started
 

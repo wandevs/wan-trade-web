@@ -1,4 +1,4 @@
-# P2P Exchange Platform
+# WanSwap
 # User Manual
 
 
@@ -6,9 +6,9 @@
 
 # 1. Overview
 
-P2PE (peer to peer exchange) is a decentralized trading DApp built on Wanchain which allows for the exchange of value between assets from multiple different blockchains.
+WanSwap (peer to peer exchange) is a decentralized trading DApp built on Wanchain which allows for the exchange of value between assets from multiple different blockchains.
 
-**P2PE Features:**
+**WanSwap Features:**
 
     1) 0 transaction fee for all orders
 
@@ -36,7 +36,7 @@ First Lucy posts an ad to her social network:
 
 Tom sees Lucy's post and wants to sell his ETH her, so after the two communicate and agree on the details, they decide to move forward with the transactions. 
 
-If Tom and Lucy were to proceed using a trusted third party mediator such as a law firm it would be costly and complex. After research different methods for completing OTC transactions without a trusted third party mediator, the pair decide that P2PE is the best solution. The pair move forward with the transaction as follows:
+If Tom and Lucy were to proceed using a trusted third party mediator such as a law firm it would be costly and complex. After research different methods for completing OTC transactions without a trusted third party mediator, the pair decide that WanSwap is the best solution. The pair move forward with the transaction as follows:
 
 # 3. Operation Process
 
@@ -68,11 +68,11 @@ Download: [https://wanchain.org/getstarted](https://wanchain.org/getstarted)
 
 ![img](./img/8.png)
 
-**Step 6:** Lucy and Tom open the DApp store section of the Wallet and add the P2PE DApp to their wallet’s local DApps section.
+**Step 6:** Lucy and Tom open the DApp store section of the Wallet and add the WanSwap DApp to their wallet’s local DApps section.
 
 ![img](./img/9.png)
 
-**Step 7:** Lucy and Tom open the P2PE DApp in the wallet, and select the addresses where WBTC and WETH are stored through address selector in the top right corner.
+**Step 7:** Lucy and Tom open the WanSwap DApp in the wallet, and select the addresses where WBTC and WETH are stored through address selector in the top right corner.
 
 ![img](./img/10.png)
 
@@ -118,17 +118,17 @@ Download: [https://wanchain.org/getstarted](https://wanchain.org/getstarted)
 
 For detailed security analysis and working principle see: 
 
-[P2P Exchange Working Principles](./P2P_Exchange_Working_Principles.md)
+[WanSwap Working Principles](./P2P_Exchange_Working_Principles.md)
 
 # 5. Q&A
 
-**Question 1: What are the advantages of P2PE over ordinary HTLC trading products on Ethereum?**
+**Question 1: What are the advantages of WanSwap over ordinary HTLC trading products on Ethereum?**
 
 Answer: 
 
-P2PE has the following four advantages over ordinary HTLC trading products on Ethereum:
+WanSwap has the following four advantages over ordinary HTLC trading products on Ethereum:
 
-1) By taking advantage Wanchain’s cross-chain features, P2PE can power multi-currency and multi-chain trading without the need to trust any third party mediator.
+1) By taking advantage Wanchain’s cross-chain features, WanSwap can power multi-currency and multi-chain trading without the need to trust any third party mediator.
  
 2) There is no need to deposit tokens in a smart contract prior to the transaction, which improves security and increases user control.
 
@@ -136,39 +136,39 @@ P2PE has the following four advantages over ordinary HTLC trading products on Et
 
 4) The transaction initiator Party A can cancel the transaction at any time before Party B completes the transaction without any delay
 
-**Question 2: Why should P2PE users manually click on the approve switch to perform asset authorization operations on smart contracts instead of completing them automatically in the background?**
+**Question 2: Why should WanSwap users manually click on the approve switch to perform asset authorization operations on smart contracts instead of completing them automatically in the background?**
 
 Answer: 
 
 Because the authorization switch is a safety guarantee for the user's transaction, the user can cancel the transaction by manually turning off the authorization switch at any time to protect the asset from loss. On the other hand, because the Approve operation gives a high level of control over user assets to the smart contract, the user should perform the operation deliberately and with full understanding.
 
-**Question 3: Is there no fee for P2PE transactions?**
+**Question 3: Is there no fee for WanSwap transactions?**
 
 Answer: 
 
-When using P2PE for WRC20 token transactions, there is no fee at all, but if users need to perform a cross-chain transaction first and then trade, they need to pay a small amount of cross-chain fees.
+When using WanSwap for WRC20 token transactions, there is no fee at all, but if users need to perform a cross-chain transaction first and then trade, they need to pay a small amount of cross-chain fees.
 
-**Question 4: Are P2PE products completely open source? Can P2PE be ported to Ethereum to work?**
+**Question 4: Are WanSwap products completely open source? Can WanSwap be ported to Ethereum to work?**
 
 Answer: 
 
 The smart contract code and front-end code are completely open source and can be ported to Ethereum to work, but after the porting, they will not have cross-chain functions. In the future, after the Wanchain’s bidirectional  cross-chain bridge is complete, cross-chain transactions can also be performed on Ethereum. However, transaction fees are much more expensive than Wanchain, and also much slower.
 
-**Question 5: When should I toggle the “Approve” button on P2PE, and when can I cancel it?**
+**Question 5: When should I toggle the “Approve” button on WanSwap, and when can I cancel it?**
 
 Answer: 
 
 As long as the transaction is successfully completed, it can be canceled.
 
-Question 6: What is the relationship between P2PE and Wandex?
+Question 6: What is the relationship between WanSwap and Wandex?
 
 Answer: 
 
-P2PE is an independent DApp that does not depend on Wandex, but the on-chain settlement part uses Wandex’s smart contracts. This smart contract does not restrict users, any DApp developed by anyone can use it to complete on-chain settlement transactions.
+WanSwap is an independent DApp that does not depend on Wandex, but the on-chain settlement part uses Wandex’s smart contracts. This smart contract does not restrict users, any DApp developed by anyone can use it to complete on-chain settlement transactions.
 
-**Question 7: For the P2PE "Approve" operation, if I Approve, but do not cancel the Approve operation, will it automatically cancel the Approve operation at some time?**
+**Question 7: For the WanSwap "Approve" operation, if I Approve, but do not cancel the Approve operation, will it automatically cancel the Approve operation at some time?**
 
 Answer:
 
-No, it will not automatically cancel. It works like the wandex. but wandex approve a big amount, P2PE only approve the amount you want to trade.
+No, it will not automatically cancel. It works like the wandex. but wandex approve a big amount, WanSwap only approve the amount you want to trade.
 If you trade 10 WWAN, it approve only 10WWAN, it turns to zero when you trade finish.

@@ -77,6 +77,10 @@ export const getApproveState = async (tokenAddress, userAddress, amount) => {
 
 export const enable = async (address, wallet, amount) => {
   let ret = await approve(address, '', web3.utils.toBN(web3.utils.toWei(amount.toString())).toString('hex'), 'Enable', wallet);
+  if (!ret) {
+    await disable(address, wallet);
+    ret = await approve(address, '', web3.utils.toBN(web3.utils.toWei(amount.toString())).toString('hex'), 'Enable', wallet);
+  }
   return ret;
 };
 
@@ -114,10 +118,10 @@ export const approve = async (tokenAddress, symbol, allowance, action, wallet) =
         return true;
       }
     }
-    message.error(action + " failed");
+    message.warn(action + " failed");
     return false;
   } catch (e) {
-    message.error(e.toString());
+    message.warn(e.toString());
   }
   return false;
 };
